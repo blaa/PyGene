@@ -1,5 +1,11 @@
 Changelog for pygene
 
+July 25, 2011
+- Fixed performance issue with calculating fitness.
+  Fitness is now assumed to be stable for a generated organism.
+  (bla)
+
+
 December 12, 2005
 
     - version 0.2.1

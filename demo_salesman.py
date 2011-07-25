@@ -222,7 +222,7 @@ def main():
 
     try:
         while True:
-            print "gen=%s best=%s avg=%s" % (i, pop.best().fitness(), pop.fitness())
+            print "gen=%s best=%s avg=%s" % (i, pop.best().get_fitness(), pop.fitness())
             pop.gen()
             i += 1
     except KeyboardInterrupt:

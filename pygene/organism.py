@@ -55,7 +55,10 @@ class BaseOrganism(PGXmlMixin):
     
     def fitness(self):
         """
-        Return the fitness level of this organism, as a float
+        Return the fitness level of this organism, as a float.
+        Usually instead of this method a caching method 'get_fitness'
+        is used, which calls this method always only once on an
+        organism.
         
         Should return a number from 0.0 to infinity, where
         0.0 means 'perfect'
@@ -66,6 +69,16 @@ class BaseOrganism(PGXmlMixin):
         This method must be overridden
         """
         raise Exception("Method 'fitness' not implemented")
+
+    def get_fitness(self):
+        """
+        Return fitness from the cache, and if needed - calculate it.
+        """
+        if self.fitness_cache is not None:
+            return self.fitness_cache
+        else:
+            self.fitness_cache = self.fitness()
+            return self.fitness_cache            
     
     def duel(self, opponent):
         """
@@ -76,7 +89,7 @@ class BaseOrganism(PGXmlMixin):
         """
         #print "BaseOrganism.duel: opponent=%s" % str(opponent)
     
-        return cmp(self.fitness(), opponent.fitness())
+        return cmp(self.get_fitness(), opponent.get_fitness())
     
     def __cmp__(self, other):
         """
@@ -93,7 +106,7 @@ class BaseOrganism(PGXmlMixin):
         
         Override if needed
         """
-        return "<%s:%s>" % (self.__class__.__name__, self.fitness())
+        return "<%s:%s>" % (self.__class__.__name__, self.get_fitness())
     
     def mutate(self):
         """
@@ -193,6 +206,9 @@ class Organism(BaseOrganism):
         """
         # the set of genes which comprise this organism
         self.genes = {}
+
+        # Cache fitness
+        self.fitness_cache = None
     
         # remember the gene count
         self.numgenes = len(self.genome)
@@ -330,7 +346,7 @@ class Organism(BaseOrganism):
         """
         print "Organism %s:" % self.__class__.__name__
     
-        print "  Fitness: %s" % self.fitness()
+        print "  Fitness: %s" % self.get_fitness()
         for k,v in self.genes.items():
             print "  Gene: %s = %s" % (k, v)
     
@@ -426,6 +442,9 @@ class MendelOrganism(BaseOrganism):
         """
         # the set of genes which comprise this organism
         self.genes = {}
+
+        # Cache fitness
+        self.fitness_cache = None
     
         # remember the gene count
         self.numgenes = len(self.genome)
@@ -623,7 +642,7 @@ class MendelOrganism(BaseOrganism):
         """
         print "Organism %s:" % self.__class__.__name__
     
-        print "  Fitness: %s" % self.fitness()
+        print "  Fitness: %s" % self.get_fitness()
         for k,v in self.genes.items():
             print "  Gene: %s" % k
             print "    Phenotype: %s" % self[k]

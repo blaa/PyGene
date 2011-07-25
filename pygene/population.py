@@ -292,7 +292,7 @@ class Population(PGXmlMixin):
         """
         returns the average fitness value for the population
         """
-        fitnesses = map(lambda org: org.fitness(), self.organisms)
+        fitnesses = map(lambda org: org.get_fitness(), self.organisms)
     
         return sum(fitnesses)/len(fitnesses)
     

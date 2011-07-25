@@ -100,8 +100,8 @@ def main(nfittest=10, nkids=100):
     while True:
         b = ph.best()
         print "generation %s: %s best=%s average=%s)" % (
-            i, repr(b), b.fitness(), ph.fitness())
-        if b.fitness() <= 0:
+            i, repr(b), b.get_fitness(), ph.fitness())
+        if b.get_fitness() <= 0:
             print "cracked!"
             break
         i += 1
