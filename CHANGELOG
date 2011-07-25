@@ -1,0 +1,46 @@
+Changelog for pygene
+
+December 12, 2005
+
+    - version 0.2.1
+
+        - renamed Organism class to MendelOrganism, to indicate
+          that it is based on a 'double-helix' eukaryotic model
+        - created Organism class, which uses only single helix
+          (single genes, not gene pairs)
+
+December 11, 2005
+
+    - version 0.2
+        - added genetic programming!!
+            - with working example
+        - changed mutation behaviour
+            - previously, child organisms were mutated in-place
+            - now, .mutate() on organisms returns a mutated copy
+        - changed crossover behaviour
+            - previously, crossover mating only returned one child
+            - now, crossover mating returns 2 children, so no
+              genetic material is lost
+
+
+December 9, 2005
+
+    - version 0.1.1
+        - added more primitive Gene subclasses
+        - replaced typeless 'gene names' list in Organisms
+          with a .genome dict
+        - added XML dump capability for genes, organisms and
+          populations
+        - added 'incest' feature, where high-fitness parents
+          can stay in the population and mate with their
+          children
+        - added option for spontaneous appearance of new
+          random organisms
+        - simplified the creation of random organisms
+
+December 6, 2005
+
+    - version 0.1
+
+        - first release
+

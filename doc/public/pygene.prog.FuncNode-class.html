@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>pygene.prog.FuncNode</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css"></link>
+</head>
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+
+<!-- =========== START OF NAVBAR =========== -->
+<table class="navbar" border="0" width="100%" cellpadding="0" bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="center">
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="pygene-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="trees.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="indices.html">Index</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar" align="right" width="100%">
+      <table border="0" cellpadding="0" cellspacing="0">
+      <tr><th class="navbar" align="center">
+        <p class="nomargin">
+          pygene&nbsp;-&nbsp;Python&nbsp;genetic&nbsp;algorithms
+      </p></th></tr></table>
+    </th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <font size="-1"><b class="breadcrumbs">
+        <a href="pygene-module.html">Package&nbsp;pygene</a> ::
+        <a href="pygene.prog-module.html">Module&nbsp;prog</a> ::
+        Class&nbsp;FuncNode
+      </b></font></br>
+    </td>
+    <td><table cellpadding="0" cellspacing="0">
+      <tr><td align="right"><font size="-2">[<a href="../private/pygene.prog.FuncNode-class.html">show&nbsp;private</a>&nbsp;|&nbsp;hide&nbsp;private]</font></td></tr>
+      <tr><td align="right"><font size="-2">[<a href="frames.html"target="_top">frames</a>&nbsp;|&nbsp;<a href="pygene.prog.FuncNode-class.html" target="_top">no&nbsp;frames</a>]</font></td></tr>
+    </table></td>
+</tr></table>
+
+<!-- =========== START OF CLASS DESCRIPTION =========== -->
+<h2 class="class">Class FuncNode</h2>
+
+<pre class="base-tree">
+<a href="pygene.prog.BaseNode-class.html"><code>BaseNode</code></a> --+
+           |
+          <b>FuncNode</b>
+</pre><br />
+
+<hr/>
+
+node which holds a function and its argument nodes
+<hr/>
+
+
+<!-- =========== START OF METHOD SUMMARY =========== -->
+<table class="summary" border="1" cellpadding="3" cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="summary">
+  <th colspan="2">Method Summary</th></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="pygene.prog.FuncNode-class.html#__init__" class="summary-sig-name"><code>__init__</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>org</span>,
+          <span class=summary-sig-arg>depth</span>,
+          <span class=summary-sig-arg>name</span>,
+          <span class=summary-sig-arg>children</span>)</span></code>
+<br />
+creates this func node</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="pygene.prog.FuncNode-class.html#calc" class="summary-sig-name"><code>calc</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class="summary-sig-kwarg">**vars</span>)</span></code>
+<br />
+evaluates this node, plugging vars into the nodes</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="pygene.prog.FuncNode-class.html#copy" class="summary-sig-name"><code>copy</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>doSplit</span>)</span></code>
+<br />
+Copies this node and recursively its children, returning the copy</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><a name="dump"></a><span class="summary-sig"><span class="summary-sig-name">dump</span>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>level</span>)</span></code>
+</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="pygene.prog.FuncNode-class.html#mutate" class="summary-sig-name"><code>mutate</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>depth</span>)</span></code>
+<br />
+randomly mutates either this tree, or a child</td></tr>
+</table><br />
+
+
+<!-- =========== START OF METHOD DETAILS =========== -->
+<table class="details" border="1" cellpadding="3" cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="details">
+  <th colspan="2">Method Details</th></tr>
+</table>
+
+<a name="__init__"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">__init__</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>org</span>,
+          <span class=sig-arg>depth</span>,
+          <span class=sig-arg>name</span>=<span class=sig-default>None</span>,
+          <span class=sig-arg>children</span>=<span class=sig-default>None</span>)</span>
+    <br /><i>(Constructor)</i>
+  </h3>
+  creates this func node
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="calc"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">calc</span>(<span class=sig-arg>self</span>,
+          <span class="sig-kwarg">**vars</span>)</span>
+  </h3>
+  evaluates this node, plugging vars into the nodes
+  <dl><dt></dt><dd>
+    <dl><dt><b>Overrides:</b></dt>
+      <dd><a href="pygene.prog.BaseNode-class.html#calc"><code>pygene.prog.BaseNode.calc</code></a></dd>
+    </dl>
+  </dd></dl>
+</td></tr></table>
+
+<a name="copy"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">copy</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>doSplit</span>=<span class=sig-default>False</span>)</span>
+  </h3>
+  <p>Copies this node and recursively its children, returning the 
+  copy</p>
+  <p>if doSplit is true, then cuts off a piece of the tree, to support 
+  the recombination phase of mating with another program</p>
+  returns a quadruple:
+  <ul>
+    <li>
+      copy - a copy of this node
+    </li>
+    <li>
+      fragment - fragment to be given to mate
+    </li>
+    <li>
+      lst - list within copy tree to which fragment from mate should 
+      be written
+    </li>
+    <li>
+      idx - index within the lst at which the fragment should be 
+      written
+    </li>
+  </ul>
+  if doSplit is false, then the last 3 tuple items will be None
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="mutate"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">mutate</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>depth</span>)</span>
+  </h3>
+  randomly mutates either this tree, or a child
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+<br />
+
+
+<!-- =========== START OF NAVBAR =========== -->
+<table class="navbar" border="0" width="100%" cellpadding="0" bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="center">
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="pygene-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="trees.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="indices.html">Index</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar" align="right" width="100%">
+      <table border="0" cellpadding="0" cellspacing="0">
+      <tr><th class="navbar" align="center">
+        <p class="nomargin">
+          pygene&nbsp;-&nbsp;Python&nbsp;genetic&nbsp;algorithms
+      </p></th></tr></table>
+    </th>
+  </tr>
+</table>
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+  <tr>
+    <td align="left"><font size="-2">Generated by Epydoc 2.1 on Mon Dec 12 14:37:12 2005</font></td>
+    <td align="right"><a href="http://epydoc.sourceforge.net"
+                      ><font size="-2">http://epydoc.sf.net</font></a></td>
+  </tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Module and Class Hierarchies</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css"></link>
+</head>
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+
+<!-- =========== START OF NAVBAR =========== -->
+<table class="navbar" border="0" width="100%" cellpadding="0" bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="center">
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="pygene-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+    <th bgcolor="#70b0f0" class="navselect">&nbsp;&nbsp;&nbsp;Trees&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="indices.html">Index</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar" align="right" width="100%">
+      <table border="0" cellpadding="0" cellspacing="0">
+      <tr><th class="navbar" align="center">
+        <p class="nomargin">
+          pygene&nbsp;-&nbsp;Python&nbsp;genetic&nbsp;algorithms
+      </p></th></tr></table>
+    </th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+    </td>
+    <td><table cellpadding="0" cellspacing="0">
+      <tr><td align="right"><font size="-2">[show&nbsp;private&nbsp;|&nbsp;<a href="../public/trees.html">hide&nbsp;private</a>]</font></td></tr>
+      <tr><td align="right"><font size="-2">[<a href="frames.html"target="_top">frames</a>&nbsp;|&nbsp;<a href="trees.html" target="_top">no&nbsp;frames</a>]</font></td></tr>
+    </table></td>
+</tr></table>
+
+<!-- =========== START OF MODULE HIERARCHY =========== -->
+<h2>Module Hierarchy</h2>
+<ul>
+<li> <b><a href="pygene-module.html"><code>pygene</code></a></b>: <i>pygene is a library for genetic algorithms in python</i>
+  <ul>
+    <li> <b><a href="pygene.gamete-module.html"><code>gamete</code></a></b>: <i>Implements gametes, which are the result of splitting an organism's 
+genome in two, and are used in the organism's sexual reproduction</i>
+    <li> <b><a href="pygene.gene-module.html"><code>gene</code></a></b>: <i>Implements a collection of gene classes</i>
+    <li> <b><a href="pygene.organism-module.html"><code>organism</code></a></b>: <i>Implements classes for entire organisms</i>
+    <li> <b><a href="pygene.population-module.html"><code>population</code></a></b>: <i>pygene/population.py - Represents a population of organisms</i>
+    <li> <b><a href="pygene.prog-module.html"><code>prog</code></a></b>: <i>Implements genetic programming organisms</i>
+    <li> <b><a href="pygene.xmlio-module.html"><code>xmlio</code></a></b>: <i>xmlio.py</i>
+  </ul>
+</ul>
+
+<!-- =========== START OF CLASS HIERARCHY =========== -->
+<h2>Class Hierarchy</h2>
+<ul>
+  <li> <b><a href="__builtin__.object-class.html"><code>__builtin__.object</code></a></b>: <i>
+The most base type</i>
+    <ul>
+  <li> <b><a href="pygene.xmlio.PGXmlMixin-class.html"><code>pygene.xmlio.PGXmlMixin</code></a></b>: <i>
+mixin class to support pygene classes serialising themselves to/from 
+xml</i>
+    <ul>
+  <li> <b><a href="pygene.gene.BaseGene-class.html"><code>pygene.gene.BaseGene</code></a></b>: <i>
+Base class from which all the gene classes are derived.</i>
+    <ul>
+  <li> <b><a href="pygene.gene.BitGene-class.html"><code>pygene.gene.BitGene</code></a></b>: <i>
+Implements a single-bit gene</i>
+    <ul>
+  <li> <b><a href="pygene.gene.AndBitGene-class.html"><code>pygene.gene.AndBitGene</code></a></b>: <i>
+Implements a single-bit gene, whose phenotype is the AND of each gene 
+in the pair</i>
+  <li> <b><a href="pygene.gene.OrBitGene-class.html"><code>pygene.gene.OrBitGene</code></a></b>: <i>
+Implements a single-bit gene, whose phenotype is the OR of each gene 
+in the pair</i>
+  <li> <b><a href="pygene.gene.XorBitGene-class.html"><code>pygene.gene.XorBitGene</code></a></b>: <i>
+Implements a single-bit gene, whose phenotype is the exclusive-or of 
+each gene in the pair</i>
+    </ul>
+  <li> <b><a href="pygene.gene.CharGene-class.html"><code>pygene.gene.CharGene</code></a></b>: <i>
+Gene that holds a single ASCII character, as a 1-byte string</i>
+    <ul>
+  <li> <b><a href="pygene.gene.AsciiCharGene-class.html"><code>pygene.gene.AsciiCharGene</code></a></b>: <i>
+Specialisation of CharGene that can only hold chars in the legal ASCII 
+range</i>
+    <ul>
+  <li> <b><a href="pygene.gene.PrintableCharGene-class.html"><code>pygene.gene.PrintableCharGene</code></a></b>: <i>
+Specialisation of AsciiCharGene that can only hold printable chars</i>
+    </ul>
+    </ul>
+  <li> <b><a href="pygene.gene.ComplexGene-class.html"><code>pygene.gene.ComplexGene</code></a></b>: <i>
+A gene whose value is a complex point number</i>
+  <li> <b><a href="pygene.gene.DiscreteGene-class.html"><code>pygene.gene.DiscreteGene</code></a></b>: <i>
+Gene type with a fixed set of possible values, typically strings</i>
+  <li> <b><a href="pygene.gene.FloatGene-class.html"><code>pygene.gene.FloatGene</code></a></b>: <i>
+A gene whose value is a floating point number</i>
+    <ul>
+  <li> <b><a href="pygene.gene.FloatGeneMax-class.html"><code>pygene.gene.FloatGeneMax</code></a></b>: <i>
+phenotype of this gene is the greater of the values in the gene 
+pair</i>
+  <li> <b><a href="pygene.gene.FloatGeneRandom-class.html"><code>pygene.gene.FloatGeneRandom</code></a></b>: <i>
+Variant of FloatGene where mutation always randomises the value</i>
+    </ul>
+  <li> <b><a href="pygene.gene.IntGene-class.html"><code>pygene.gene.IntGene</code></a></b>: <i>
+Implements a gene whose values are ints, constrained within the 
+randMin,randMax range</i>
+    </ul>
+  <li> <b><a href="pygene.organism.BaseOrganism-class.html"><code>pygene.organism.BaseOrganism</code></a></b>: <i>
+Base class for genetic algo and genetic programming organisms</i>
+    <ul>
+  <li> <b><a href="pygene.organism.MendelOrganism-class.html"><code>pygene.organism.MendelOrganism</code></a></b>: <i>
+Classical Mendelian genetic organism</i>
+  <li> <b><a href="pygene.organism.Organism-class.html"><code>pygene.organism.Organism</code></a></b>: <i>
+Simple genetic algorithms organism</i>
+  <li> <b><a href="pygene.prog.ProgOrganism-class.html"><code>pygene.prog.ProgOrganism</code></a></b>: <i>
+Implements an organism for genetic programming</i>
+    </ul>
+  <li> <b><a href="pygene.gamete.Gamete-class.html"><code>pygene.gamete.Gamete</code></a></b>: <i>
+Contains a set of genes.</i>
+  <li> <b><a href="pygene.population.Population-class.html"><code>pygene.population.Population</code></a></b>: <i>
+Represents a population of organisms</i>
+    </ul>
+  <li> <b><a href="__builtin__.type-class.html"><code>__builtin__.type</code></a></b>: <i>
+type(object) -&gt; the object's type type(name, bases, dict) -&gt; a 
+new type</i>
+    <ul>
+  <li> <b><a href="pygene.prog.ProgOrganismMetaclass-class.html"><code>pygene.prog.ProgOrganismMetaclass</code></a></b>: <i>
+a metaclass which analyses class attribs of a ProgOrganism subclass, 
+and builds the list of functions and terminals</i>
+    </ul>
+    </ul>
+  <li> <b><a href="pygene.prog.BaseNode-class.html"><code>pygene.prog.BaseNode</code></a></b>: <i>
+Base class for genetic programming nodes</i>
+    <ul>
+  <li> <b><a href="pygene.prog.FuncNode-class.html"><code>pygene.prog.FuncNode</code></a></b>: <i>
+node which holds a function and its argument nodes</i>
+  <li> <b><a href="pygene.prog.TerminalNode-class.html"><code>pygene.prog.TerminalNode</code></a></b>: <i>
+Holds a terminal value</i>
+    <ul>
+  <li> <b><a href="pygene.prog.ConstNode-class.html"><code>pygene.prog.ConstNode</code></a></b>: <i>
+Holds a constant value</i>
+  <li> <b><a href="pygene.prog.VarNode-class.html"><code>pygene.prog.VarNode</code></a></b>: <i>
+Holds a variable</i>
+    </ul>
+    </ul>
+</ul>
+
+<!-- =========== START OF NAVBAR =========== -->
+<table class="navbar" border="0" width="100%" cellpadding="0" bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="center">
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="pygene-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="trees.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="indices.html">Index</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar" align="right" width="100%">
+      <table border="0" cellpadding="0" cellspacing="0">
+      <tr><th class="navbar" align="center">
+        <p class="nomargin">
+          pygene&nbsp;-&nbsp;Python&nbsp;genetic&nbsp;algorithms
+      </p></th></tr></table>
+    </th>
+  </tr>
+</table>
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+  <tr>
+    <td align="left"><font size="-2">Generated by Epydoc 2.1 on Mon Dec 12 14:37:12 2005</font></td>
+    <td align="right"><a href="http://epydoc.sourceforge.net"
+                      ><font size="-2">http://epydoc.sf.net</font></a></td>
+  </tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,475 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>pygene.organism.MendelOrganism</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css"></link>
+</head>
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+
+<!-- =========== START OF NAVBAR =========== -->
+<table class="navbar" border="0" width="100%" cellpadding="0" bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="center">
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="pygene-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="trees.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="indices.html">Index</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar" align="right" width="100%">
+      <table border="0" cellpadding="0" cellspacing="0">
+      <tr><th class="navbar" align="center">
+        <p class="nomargin">
+          pygene&nbsp;-&nbsp;Python&nbsp;genetic&nbsp;algorithms
+      </p></th></tr></table>
+    </th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <font size="-1"><b class="breadcrumbs">
+        <a href="pygene-module.html">Package&nbsp;pygene</a> ::
+        <a href="pygene.organism-module.html">Module&nbsp;organism</a> ::
+        Class&nbsp;MendelOrganism
+      </b></font></br>
+    </td>
+    <td><table cellpadding="0" cellspacing="0">
+      <tr><td align="right"><font size="-2">[<a href="../private/pygene.organism.MendelOrganism-class.html">show&nbsp;private</a>&nbsp;|&nbsp;hide&nbsp;private]</font></td></tr>
+      <tr><td align="right"><font size="-2">[<a href="frames.html"target="_top">frames</a>&nbsp;|&nbsp;<a href="pygene.organism.MendelOrganism-class.html" target="_top">no&nbsp;frames</a>]</font></td></tr>
+    </table></td>
+</tr></table>
+
+<!-- =========== START OF CLASS DESCRIPTION =========== -->
+<h2 class="class">Type MendelOrganism</h2>
+
+<pre class="base-tree">
+<a href="__builtin__.object-class.html"><code>object</code></a> --+        
+         |        
+<a href="pygene.xmlio.PGXmlMixin-class.html"><code>PGXmlMixin</code></a> --+    
+             |    
+  <a href="pygene.organism.BaseOrganism-class.html"><code>BaseOrganism</code></a> --+
+                 |
+                <b>MendelOrganism</b>
+</pre><br />
+
+<hr/>
+
+<p>Classical Mendelian genetic organism</p>
+<p>Contains a pair of genes for each gene in the genome</p>
+<p>Organisms contain a set of pairs of genes, where the genes of each 
+pair must be of the same type.</p>
+Class variables (to override) are:
+<ul>
+  <li>
+    genome - a dict mapping gene names to gene classes
+  </li>
+  <li>
+    mutateOneOnly - default False - if set, then the mutation phase 
+    will mutate exactly one of the genepairs in the genotype, randomly 
+    selected. If False, then apply mutation to all genes, subject to 
+    individual genes' mutation settings
+  </li>
+</ul>
+Python operators supported:
+<ul>
+  <li>
+    + - mates two organism instances together, producing a child
+  </li>
+  <li>
+    [] - returns the phenotype produced by the gene pair of a given 
+    name
+  </li>
+  <li>
+    &lt;, &lt;=, &gt;, &gt;= - compares fitness value to that of 
+    another instance
+  </li>
+</ul>
+<hr/>
+
+
+<!-- =========== START OF METHOD SUMMARY =========== -->
+<table class="summary" border="1" cellpadding="3" cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="summary">
+  <th colspan="2">Method Summary</th></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="pygene.organism.MendelOrganism-class.html#__init__" class="summary-sig-name"><code>__init__</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>gamete1</span>,
+          <span class=summary-sig-arg>gamete2</span>,
+          <span class="summary-sig-kwarg">**kw</span>)</span></code>
+<br />
+Initialises this organism from either two gametes, or from a set of 
+named gene keywords</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="pygene.organism.MendelOrganism-class.html#__getitem__" class="summary-sig-name"><code>__getitem__</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>item</span>)</span></code>
+<br />
+allows shorthand for querying the phenotype of this organism</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="pygene.organism.MendelOrganism-class.html#copy" class="summary-sig-name"><code>copy</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
+<br />
+returns a deep copy of this organism</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="pygene.organism.MendelOrganism-class.html#dump" class="summary-sig-name"><code>dump</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
+<br />
+Produce a detailed human-readable report on this organism, its 
+genotype and phenotype</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="pygene.organism.MendelOrganism-class.html#mate" class="summary-sig-name"><code>mate</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>partner</span>)</span></code>
+<br />
+Mates this organism with another organism to produce two entirely new 
+organisms via mendelian crossover</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="pygene.organism.MendelOrganism-class.html#mutate" class="summary-sig-name"><code>mutate</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
+<br />
+Implement the mutation phase, invoking the stochastic mutation method 
+on each component gene</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="pygene.organism.MendelOrganism-class.html#phenotype" class="summary-sig-name"><code>phenotype</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>geneName</span>)</span></code>
+<br />
+Returns the phenotype resulting from a given gene, OR the total 
+phenotype resulting from all the genes</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="pygene.organism.MendelOrganism-class.html#split" class="summary-sig-name"><code>split</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
+<br />
+Produces a Gamete object from random splitting of component gene 
+pairs</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="pygene.organism.MendelOrganism-class.html#xmlDumpSelf" class="summary-sig-name"><code>xmlDumpSelf</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>doc</span>,
+          <span class=summary-sig-arg>parent</span>)</span></code>
+<br />
+Dumps out this object's contents into an xml tree</td></tr>
+<tr bgcolor="#e8f0f8" class="group">
+  <th colspan="2">&nbsp;&nbsp;&nbsp;&nbsp;Inherited from BaseOrganism</th></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="pygene.organism.BaseOrganism-class.html#__add__" class="summary-sig-name"><code>__add__</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>partner</span>)</span></code>
+<br />
+Allows '+' operator for sexual reproduction</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="pygene.organism.BaseOrganism-class.html#__cmp__" class="summary-sig-name"><code>__cmp__</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>other</span>)</span></code>
+<br />
+Convenience method which invokes duel</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="pygene.organism.BaseOrganism-class.html#__repr__" class="summary-sig-name"><code>__repr__</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
+<br />
+Delivers a minimal string representation of this organism.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="pygene.organism.BaseOrganism-class.html#duel" class="summary-sig-name"><code>duel</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>opponent</span>)</span></code>
+<br />
+Duels this organism against an opponent</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="pygene.organism.BaseOrganism-class.html#fitness" class="summary-sig-name"><code>fitness</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
+<br />
+Return the fitness level of this organism, as a float</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="pygene.organism.BaseOrganism-class.html#xmlDumpAttribs" class="summary-sig-name"><code>xmlDumpAttribs</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>elem</span>)</span></code>
+<br />
+Dump out the custom attributes of this organism</td></tr>
+<tr bgcolor="#e8f0f8" class="group">
+  <th colspan="2">&nbsp;&nbsp;&nbsp;&nbsp;Inherited from PGXmlMixin</th></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="pygene.xmlio.PGXmlMixin-class.html#xmlDump" class="summary-sig-name"><code>xmlDump</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>fileobj</span>)</span></code>
+<br />
+Dumps out the population to an open file in XML format.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="pygene.xmlio.PGXmlMixin-class.html#xmlDumpClass" class="summary-sig-name"><code>xmlDumpClass</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>tag</span>)</span></code>
+<br />
+dumps out class information</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="pygene.xmlio.PGXmlMixin-class.html#xmlDumps" class="summary-sig-name"><code>xmlDumps</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
+<br />
+dumps out to xml, returning a string of the raw generated xml</td></tr>
+<tr bgcolor="#e8f0f8" class="group">
+  <th colspan="2">&nbsp;&nbsp;&nbsp;&nbsp;Inherited from object</th></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="__builtin__.object-class.html#__delattr__" class="summary-sig-name"><code>__delattr__</code></a>(<span class="summary-sig-vararg">...</span>)</span></code>
+<br />
+x.__delattr__('name') &lt;==&gt; del x.name</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="__builtin__.object-class.html#__getattribute__" class="summary-sig-name"><code>__getattribute__</code></a>(<span class="summary-sig-vararg">...</span>)</span></code>
+<br />
+x.__getattribute__('name') &lt;==&gt; x.name</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="__builtin__.object-class.html#__hash__" class="summary-sig-name"><code>__hash__</code></a>(<span class=summary-sig-arg>x</span>)</span></code>
+<br />
+x.__hash__() &lt;==&gt; hash(x)</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="__builtin__.object-class.html#__new__" class="summary-sig-name"><code>__new__</code></a>(<span class=summary-sig-arg>T</span>,
+          <span class=summary-sig-arg>S</span>,
+          <span class="summary-sig-vararg">...</span>)</span></code>
+<br />
+T.__new__(S, ...) -&gt; a new object with type S, a subtype of T</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="__builtin__.object-class.html#__reduce__" class="summary-sig-name"><code>__reduce__</code></a>(<span class="summary-sig-vararg">...</span>)</span></code>
+<br />
+helper for pickle</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="__builtin__.object-class.html#__reduce_ex__" class="summary-sig-name"><code>__reduce_ex__</code></a>(<span class="summary-sig-vararg">...</span>)</span></code>
+<br />
+helper for pickle</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="__builtin__.object-class.html#__setattr__" class="summary-sig-name"><code>__setattr__</code></a>(<span class="summary-sig-vararg">...</span>)</span></code>
+<br />
+x.__setattr__('name', value) &lt;==&gt; x.name = value</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="__builtin__.object-class.html#__str__" class="summary-sig-name"><code>__str__</code></a>(<span class=summary-sig-arg>x</span>)</span></code>
+<br />
+x.__str__() &lt;==&gt; str(x)</td></tr>
+</table><br />
+
+
+<!-- =========== START OF CLASS VARIABLE SUMMARY =========== -->
+<table class="summary" border="1" cellpadding="3" cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="summary">
+  <th colspan="2">Class Variable Summary</th></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1"><code>dict</code></font></td>
+<td><b><a href="pygene.organism.MendelOrganism-class.html#genome"><code>genome</code></a></b> = <span title="{}"><code>{}                                              </code>
+</span></td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1"><code>bool</code></font></td>
+<td><b><a href="pygene.organism.MendelOrganism-class.html#mutateOneOnly"><code>mutateOneOnly</code></a></b> = <span title="False"><code>False                                    </code>
+</span></td></tr>
+</table><br />
+
+
+<!-- =========== START OF METHOD DETAILS =========== -->
+<table class="details" border="1" cellpadding="3" cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="details">
+  <th colspan="2">Method Details</th></tr>
+</table>
+
+<a name="__init__"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">__init__</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>gamete1</span>=<span class=sig-default>None</span>,
+          <span class=sig-arg>gamete2</span>=<span class=sig-default>None</span>,
+          <span class="sig-kwarg">**kw</span>)</span>
+    <br /><i>(Constructor)</i>
+  </h3>
+  <p>Initialises this organism from either two gametes, or from a set of 
+  named gene keywords</p>
+  Arguments:
+  <ul>
+    <li>
+      gamete1, gamete2 - a pair of gametes from which to take the 
+      genes comprising the new organism. May be omitted.
+    </li>
+  </ul>
+  Keywords:
+  <ul>
+    <li>
+      keyword names are gene names within the organism's genome, and 
+      values are either:
+      <ul>
+        <li>
+          a tuple containing two instances of a Gene subclass, or
+        </li>
+        <li>
+          a Gene subclass (in which case the class will be 
+          instantiated twice to form a random gene pair)
+        </li>
+      </ul>
+    </li>
+  </ul>
+  Any gene names in the genome, which aren't given in the constructor 
+  keywords, will be added as random instances of the respective gene 
+  class. (Recall that all Gene subclasses can be instantiated with no 
+  arguments to create a random valued gene).
+  <dl><dt></dt><dd>
+    <dl><dt><b>Overrides:</b></dt>
+      <dd><a href="__builtin__.object-class.html#__init__"><code>__builtin__.object.__init__</code></a></dd>
+    </dl>
+  </dd></dl>
+</td></tr></table>
+
+<a name="__getitem__"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">__getitem__</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>item</span>)</span>
+    <br /><i>(Indexing operator)</i>
+  </h3>
+  allows shorthand for querying the phenotype of this organism
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="copy"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">copy</span>(<span class=sig-arg>self</span>)</span>
+  </h3>
+  returns a deep copy of this organism
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="dump"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">dump</span>(<span class=sig-arg>self</span>)</span>
+  </h3>
+  Produce a detailed human-readable report on this organism, its 
+  genotype and phenotype
+  <dl><dt></dt><dd>
+    <dl><dt><b>Overrides:</b></dt>
+      <dd><a href="pygene.organism.BaseOrganism-class.html#dump"><code>pygene.organism.BaseOrganism.dump</code></a></dd>
+    </dl>
+  </dd></dl>
+</td></tr></table>
+
+<a name="mate"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">mate</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>partner</span>)</span>
+  </h3>
+  Mates this organism with another organism to produce two entirely 
+  new organisms via mendelian crossover
+  <dl><dt></dt><dd>
+    <dl><dt><b>Overrides:</b></dt>
+      <dd><a href="pygene.organism.BaseOrganism-class.html#mate"><code>pygene.organism.BaseOrganism.mate</code></a></dd>
+    </dl>
+  </dd></dl>
+</td></tr></table>
+
+<a name="mutate"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">mutate</span>(<span class=sig-arg>self</span>)</span>
+  </h3>
+  <p>Implement the mutation phase, invoking the stochastic mutation 
+  method on each component gene</p>
+  Does not affect this organism, but returns a mutated copy of it
+  <dl><dt></dt><dd>
+    <dl><dt><b>Overrides:</b></dt>
+      <dd><a href="pygene.organism.BaseOrganism-class.html#mutate"><code>pygene.organism.BaseOrganism.mutate</code></a></dd>
+    </dl>
+  </dd></dl>
+</td></tr></table>
+
+<a name="phenotype"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">phenotype</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>geneName</span>=<span class=sig-default>None</span>)</span>
+  </h3>
+  <p>Returns the phenotype resulting from a given gene, OR the total 
+  phenotype resulting from all the genes</p>
+  tries to invoke a child class' method called 'phen_&lt;name&gt;'
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="split"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">split</span>(<span class=sig-arg>self</span>)</span>
+  </h3>
+  Produces a Gamete object from random splitting of component gene 
+  pairs
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="xmlDumpSelf"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">xmlDumpSelf</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>doc</span>,
+          <span class=sig-arg>parent</span>)</span>
+  </h3>
+  <p>Dumps out this object's contents into an xml tree</p>
+  Arguments:
+  <ul>
+    <li>
+      doc - an xml.dom.minidom.Document object
+    </li>
+    <li>
+      parent - an xml.dom.minidom.Element parent, being the node into 
+      which this node should be placed
+    </li>
+  </ul>
+  <dl><dt></dt><dd>
+    <dl><dt><b>Overrides:</b></dt>
+      <dd><a href="pygene.organism.BaseOrganism-class.html#xmlDumpSelf"><code>pygene.organism.BaseOrganism.xmlDumpSelf</code></a></dd>
+    </dl>
+  </dd></dl>
+</td></tr></table>
+<br />
+
+
+<!-- =========== START OF CLASS VARIABLE DETAILS =========== -->
+<table class="details" border="1" cellpadding="3" cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="details">
+  <th colspan="2">Class Variable Details</th></tr>
+</table>
+<table width="100%" class="var-details" bgcolor="#e0e0e0"><tr><td>
+<a name="genome"></a>
+<h3>genome</h3>
+<dl>
+  <dt></dt>
+  <dd>
+    <dl>
+      <dt><b>Type:</b></dt>
+      <dd>
+          <code>dict</code>
+
+      </dd>
+<span title="{}">      <dt><b>Value:</b></dt>
+      <dd><table><tr><td>
+<pre class="variable">
+{}                                                                     </pre>
+        </td></tr></table></dd>
+</span>    </dl>
+  </dd>
+</dl></td></tr></table>
+<table width="100%" class="var-details" bgcolor="#e0e0e0"><tr><td>
+<a name="mutateOneOnly"></a>
+<h3>mutateOneOnly</h3>
+<dl>
+  <dt></dt>
+  <dd>
+    <dl>
+      <dt><b>Type:</b></dt>
+      <dd>
+          <code>bool</code>
+
+      </dd>
+<span title="False">      <dt><b>Value:</b></dt>
+      <dd><table><tr><td>
+<pre class="variable">
+False                                                                  </pre>
+        </td></tr></table></dd>
+</span>    </dl>
+  </dd>
+</dl></td></tr></table>
+<br />
+
+
+<!-- =========== START OF NAVBAR =========== -->
+<table class="navbar" border="0" width="100%" cellpadding="0" bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="center">
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="pygene-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="trees.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="indices.html">Index</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar" align="right" width="100%">
+      <table border="0" cellpadding="0" cellspacing="0">
+      <tr><th class="navbar" align="center">
+        <p class="nomargin">
+          pygene&nbsp;-&nbsp;Python&nbsp;genetic&nbsp;algorithms
+      </p></th></tr></table>
+    </th>
+  </tr>
+</table>
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+  <tr>
+    <td align="left"><font size="-2">Generated by Epydoc 2.1 on Mon Dec 12 14:37:12 2005</font></td>
+    <td align="right"><a href="http://epydoc.sourceforge.net"
+                      ><font size="-2">http://epydoc.sf.net</font></a></td>
+  </tr>
+</table>
+</body>
+</html>

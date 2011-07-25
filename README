@@ -1,0 +1,43 @@
+
+Overview:
+--------
+
+pygene is my attempt at a genetic algorithms
+and genetic programming library
+for python that is easy to use and understand
+
+This is your chance to play God.
+
+You design the genome of a species.
+
+You implement a fitness calculation procedure
+for members of that species.
+
+You create a population of that species,
+then sit back as members of the species indulge
+their promiscuous desires.
+
+A given organism's chance of getting laid is proportional
+tno its fitness.
+
+Watch as your population evolves closer and closer
+to perfection, or converges to something reasonably close
+to it.
+
+Documentation:
+-------------
+
+To get your nice HTML doco, type:
+
+  ./makedoc.py
+
+
+Examples:
+--------
+
+There are some examples in the toplevel directory, including:
+ - Travelling Salesman Problem (console and graphical versions)
+ - simple converger
+ - string guesser
+ - function deriver (genetic programming)
+

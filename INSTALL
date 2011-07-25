@@ -1,0 +1,16 @@
+
+INSTALL file for pygene
+
+Prerequisites:
+ - python 2.3 or later
+
+This is a python distutils-compliant package.
+
+To install it, become root and type:
+
+  python setup.py install
+
+If you want to run the gui version of the
+travelling salesman problem, you'll need to
+install fltk (fltk.sf.net) and pyfltk (pyfltk.sf.net)
+
