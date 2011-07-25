@@ -69,7 +69,7 @@ class FracOrganism(Organism):
         'init':OrgGene,
         'delta':DeltaGene,
         'iterations':IterationsGene,
-        )
+        }
 
     maxIterations = 100
 
