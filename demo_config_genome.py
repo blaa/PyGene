@@ -32,6 +32,9 @@ One section per gene.
 possible types (for current list see pygene/config.py):
 int, int_exchange, float, float_exchange, float_random, float_max, complex
 You can create a genes from previously specified ones using 'alias' field.
+
+There might be available a special section 'population' with parameters
+for population. It's never treated as a gene.
 """
 
 from pygene.gene import FloatGene, FloatGeneMax
@@ -83,6 +86,9 @@ class QuadraticSolver(Organism):
             self.fitness(), self['x1'], self['x2'])
 
 
+QPopulation = loader.load_population("QPopulation", species=QuadraticSolver)
+
+"""
 class QPopulation(Population):
 
     species = QuadraticSolver
@@ -97,6 +103,7 @@ class QPopulation(Population):
     mutants = 0.5
 
 # create a new population, with randomly created members
+"""
 
 pop = QPopulation()
 
@@ -113,7 +120,8 @@ def main():
             # and dump it out
             #print [("%.2f %.2f" % (o['x1'], o['x2'])) for o in pop.organisms]
             best = pop.organisms[0]
-            print "fitness=%f x1=%f x2=%f" % (best.get_fitness(), best['x1'], best['x2'])
+            print "fitness=%f avg=%f x1=%f x2=%f" % (best.get_fitness(), pop.fitness(),
+                                                     best['x1'], best['x2'])
             if best.get_fitness() < 0.6:
                 break
 

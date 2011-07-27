@@ -23,12 +23,11 @@ One section per gene.
 
 import ConfigParser
 from ConfigParser import NoOptionError
-# TODO Add other here...
-from pygene.gene import ComplexGeneFactory
-from pygene.gene import IntGeneFactory, IntGeneExchangeFactory
-from pygene.gene import FloatGeneFactory, FloatGeneRandomFactory, FloatGeneMaxFactory
-from pygene.gene import FloatGeneExchangeFactory
 
+from gene import ComplexGeneFactory
+from gene import IntGeneFactory, IntGeneExchangeFactory
+from gene import FloatGeneFactory, FloatGeneRandomFactory, FloatGeneMaxFactory
+from gene import FloatGeneExchangeFactory
 
 class LoaderError(Exception):
     pass
@@ -57,23 +56,13 @@ def _floatcast(section, key, value):
 
 class ConfigLoader(object):
 
-    def __init__(self, filename=None, require_genes=[], genes=None, config=None):
+    def __init__(self, filename, require_genes=[]):
         """
         Genome loader.
-        If genes - a list of names - is passed only named genes will
-        be loaded from the config.
-
+        Filename - path to configuration
         If require_genes are passed after the loading we ensure that
         they exist.
-
-        If filename is given we create config object ourselves and
-           load it from the file when .load() method is called
-           otherwise we require a config instance which already was
-           loaded.  With the 'config' you usually want to pass 'genes'
-           option to limit us to only few config sections.
         """
-
-        assert(filename is not None or config is not None)
 
         # Dictionary of supported types into casts and factories
         self.types = {
@@ -92,23 +81,63 @@ class ConfigLoader(object):
 
         self.genome = {}
 
-        self.genes_to_load = genes
         self.require_genes = require_genes
 
-        if filename is not None:
-            self.config = ConfigParser.RawConfigParser()
-            self.config.optionxform = str # Don't lower() names
-            self.config.read(filename)
-        elif config is not None:
-            self.config = config
-        else:
-            raise LoaderError("Either filename or config object must be passed it")
+        self.config = ConfigParser.RawConfigParser()
+        self.config.optionxform = str # Don't lower() names
+        self.config.read(filename)
+
+        # Do we have a population definition also?
+        self._pre_parse_population()
+
+
+
 
     def register_type(self, typename, cast, factory):
         """
         User can register his types using this method
         """
         self.types[typename] = (cast, factory)
+
+    def _pre_parse_population(self):
+        self.has_population = self.config.has_section('population')
+        try:
+            genes = self.config.get('population', 'genes')
+            genes = [gene.strip() for gene in genes.split(" ")]
+            self.genes = genes if genes else None
+        except NoOptionError:
+            self.genes = None
+
+    def load_population(self, name, species):
+        """
+        Parse population options and return a population
+        """
+        import new
+        from population import Population
+
+        if not self.has_population:
+            raise LoaderError("No population is defined in the config file")
+        args = {
+            'species': species
+        }
+        def parse(fun, name):
+            if self.config.has_option('population', name):
+                try:
+                    val = fun('population', name)
+                    args[name] = val
+                except ValueError:
+                    raise LoaderError("Invalid value for population option " + name)
+
+        parse(self.config.getint, 'initPopulation')
+        parse(self.config.getint, 'childCull')
+        parse(self.config.getint, 'childCount')
+        parse(self.config.getint, 'incest')
+        parse(self.config.getint, 'numNewOrganisms')
+        parse(self.config.getboolean, 'mutateAfterMating')
+        parse(self.config.getfloat, 'mutants')
+
+        return new.classobj(name, (Population,), args)
+
 
     def _parse_gene(self, section):
         """
@@ -120,17 +149,6 @@ class ConfigLoader(object):
         # This check won't work because of configparser:
         if section in self.genome:
             raise LoaderError("Gene %s was already defined" % section_)
-
-        # Alias?
-        try:
-            alias = self.config.get(section, 'alias')
-            if alias not in self.genome:
-                raise LoaderError(("Gene %s is an alias for non-existing gene %s. "
-                                   "Order matters!") % alias)
-            return self.genome[alias]
-        except NoOptionError:
-            # Not an alias.
-            pass
 
         try:
             typename = self.config.get(section, 'type')
@@ -160,11 +178,21 @@ class ConfigLoader(object):
         Load genome from config file
         """
 
-        sections = self.genes_to_load if self.genes_to_load else self.config.sections()
+        sections = self.genes if self.genes else self.config.sections()
 
         for section in sections:
-            gene = self._parse_gene(section)
-            self.genome[section] = gene
+            if section.lower() == 'population':
+                continue
+            elif self.config.has_option(section, 'alias'):
+                alias = self.config.get(section, 'alias')
+                if alias not in self.genome:
+                    raise LoaderError(("Gene %s is an alias for non-existing gene %s. "
+                                       "Order matters!") % (section, alias))
+                genome[section] = self.genome[alias]
+                continue
+            else:
+                gene = self._parse_gene(section)
+                self.genome[section] = gene
 
         for gene in self.require_genes:
             if gene not in self.genome:
