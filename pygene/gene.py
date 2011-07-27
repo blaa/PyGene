@@ -9,7 +9,7 @@ These genes work via classical Mendelian genetics
 """
 
 import sys, new
-from random import randrange, random, uniform
+from random import randrange, random, uniform, choice
 from math import sqrt
 
 from xmlio import PGXmlMixin
@@ -27,21 +27,28 @@ class BaseGene(PGXmlMixin):
     
     # probability of a mutation occurring
     mutProb = 0.01
+
+    # List of acceptable fields for the factory
+    fields = ["value", "mutProb"]
     
-    def __init__(self, value=None):
+    def __init__(self):
     
         # if value is not provided, it will be
         # randomly generated
-        if value == None:
-            value = self.randomValue()
+        if self.__class__.value == None:
+            self.value = self.randomValue()
+        else:
+            self.value = self.__class__.value
     
-        self.value = value
     
     def copy(self):
         """
         returns clone of this gene
         """
-        return self.__class__(self.value)
+        cls = self.__class__()
+        cls.value = self.value
+        return cls
+        
     
     def __add__(self, other):
         """
@@ -85,15 +92,6 @@ class BaseGene(PGXmlMixin):
         """
         raise Exception("Method 'randomValue' not implemented")
     
-    
-    def copy(self):
-        """
-        Produce an exact copy of this gene
-    
-        Shouldn't need to be overridden
-        """
-        return self.__class__(self.value)
-    
     def xmlDumpSelf(self, doc, parent):
         """
         dump out this gene into parent tag
@@ -131,7 +129,11 @@ class ComplexGene(BaseGene):
     # override in subclasses
     randMin = -1.0
     randMax = 1.0
-    
+
+    # Acceptable fields for factory
+    fields = ["value", "mutProb", "mutAmtReal", "mutAmtImag",
+              "randMin", "randMax"]
+
     def __add__(self, other):
         """
         Combines two genes in a gene pair, to produce an effect
@@ -219,6 +221,9 @@ class FloatGene(BaseGene):
     # override in subclasses
     randMin = -1.0
     randMax = 1.0
+
+    # Acceptable fields for factory
+    fields = ["value", "mutProb", "mutAmt", "randMin", "randMax"]
     
     def __add__(self, other):
         """
@@ -287,7 +292,19 @@ class FloatGeneMax(FloatGene):
         and the other gene's values
         """
         return max(self.value, other.value)
-    
+
+class FloatGeneExchange(FloatGene):
+    """
+    phenotype of this gene is the random of the values
+    in the gene pair
+    """
+    def __add__(self, other):
+        """
+        produces phenotype of gene pair, as the random of this
+        and the other gene's values
+        """
+        return choice([self.value, other.value])
+
 
 class IntGene(BaseGene):
     """
@@ -304,6 +321,9 @@ class IntGene(BaseGene):
     
     # maximum amount by which gene can mutate
     mutAmt = 1
+
+    # Acceptable fields for factory
+    fields = ["value", "mutProb", "mutAmt", "randMin", "randMax"]
     
     def mutate(self):
         """
@@ -336,7 +356,15 @@ class IntGene(BaseGene):
         numbers dominating
         """
         return max(self.value, other.value)
-    
+
+
+class IntGeneExchange(IntGene):
+    def __add__(self, other):
+        """
+        A variation of int gene where during the mixing a
+        random gene is selected instead of max.
+        """
+        return choice([self.value, other.value])
 
 
 class CharGene(BaseGene):
@@ -527,11 +555,7 @@ class BitGene(BaseGene):
         """
         Returns a legal random (boolean) value
         """
-        if random() < 0.5:
-            return 1
-        else:
-            return 0
-    
+        return choice([0, 1])
 
 
 class AndBitGene(BitGene):
@@ -569,59 +593,37 @@ class XorBitGene(BitGene):
         Produces the 'phenotype' as xor of gene pair values
         """
         return self.value ^ other.value
-    
 
+##
+# Gene factories
+# Necessary for config loading.
+##
 
-def FloatGeneFactory(name, **kw):
-    """
-    Returns a new class object, being a subclass
-    of FloatGene, with class attributes
-    set from keywords
-    """
-    return new.classobj(name, (FloatGene,), kw)
+def _new_factory(cls):
+    "Creates gene factories"
+    def factory(name, **kw):
+        "Gene factory"
+        for key in kw.iterkeys():
+            if key not in cls.fields:
+                raise Exception("Tried to create a gene with an invalid field: " + key)
+        return new.classobj(name, (cls,), kw)
+    return factory
 
+ComplexGeneFactory  = _new_factory(ComplexGene)
+DiscreteGeneFactory = _new_factory(DiscreteGene)
 
-def IntGeneFactory(name, **kw):
-    """
-    Returns a new class object, being a subclass
-    of IntGene, with class attributes
-    set from keywords
-    """
-    return new.classobj(name, (IntGene,), kw)
+FloatGeneFactory         = _new_factory(FloatGene)
+FloatGeneMaxFactory      = _new_factory(FloatGeneMax)
+FloatGeneRandomFactory   = _new_factory(FloatGeneRandom)
+FloatGeneExchangeFactory = _new_factory(FloatGeneExchange)
 
+IntGeneFactory         = _new_factory(IntGene)
+IntGeneExchangeFactory = _new_factory(IntGeneExchange)
 
-def CharGeneFactory(name, **kw):
-    """
-    Returns a new class object, being a subclass
-    of CharGene, with class attributes
-    set from keywords
-    """
-    return new.classobj(name, (CharGene,), kw)
+CharGeneFactory          = _new_factory(CharGene)
+AsciiCharGeneFactory     = _new_factory(AsciiCharGene)
+PrintableCharGeneFactory = _new_factory(PrintableCharGene)
 
-
-def AsciiCharGeneFactory(name, **kw):
-    """
-    Returns a new class object, being a subclass
-    of AsciiCharGene, with class attributes
-    set from keywords
-    """
-    return new.classobj(name, (AsciiCharGene,), kw)
-
-def PrintableCharGeneFactory(name, **kw):
-    """
-    Returns a new class object, being a subclass
-    of PrintableGene, with class attributes
-    set from keywords
-    """
-    return new.classobj(name, (AsciiCharGene,), kw)
-
-def DiscreteGeneFactory(name, **kw):
-    """
-    Returns a new class object, being a subclass
-    of DiscreteGene, with class attributes
-    set from keywords
-    """
-    return new.classobj(name, (DiscreteGene,), kw)
 
 # utility functions
 
@@ -631,6 +633,7 @@ def rndPair(geneclass):
     instances of the given gene class
     """
     return (geneclass(), geneclass())
+
 
 
 
