@@ -233,6 +233,9 @@ class Population(PGXmlMixin):
         if self.incest:
             children.extend(self[:self.incest])
 
+        for child in children:
+            child.prepare_fitness()
+
         children.sort()
 
         # and add in some mutants, a proportion of the children
@@ -249,17 +252,20 @@ class Population(PGXmlMixin):
                     idx = int(sqrt(randrange(n2children)))
                     #child = children[nchildren - idx - 1]
                     child = children[-idx]
-                    mutants.append(child.mutate())
+                    mutant = child.mutate()
+                    mutant.prepare_fitness()
+                    mutants.append(mutant)
             else:
                 for i in xrange(numMutants):
-                    mutants.append(children[i].mutate())
+                    mutant = children[i].mutate()
+                    mutant.prepare_fitness()
+                    mutants.append(mutant)
 
             children.extend(mutants)
-
+            children.sort()
         #print "added %s mutants" % numMutants
 
         # sort the children by fitness
-        children.sort()
 
         # take the best 'nfittest', make them the new population
         self.organisms[:] = children[:nfittest]
@@ -313,6 +319,8 @@ class Population(PGXmlMixin):
         costly sorting
         """
         if not self.sorted:
+            for organism in self.organisms:
+                organism.prepare_fitness()
             self.organisms.sort()
             self.sorted = True
 

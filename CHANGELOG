@@ -1,10 +1,19 @@
 Changelog for pygene
 
-July 25, 2011
-- Fixed performance issue with calculating fitness.
-  Fitness is now assumed to be stable for a generated organism.
-  (bla)
+July 25-26, 2011
 
+    - version 0.2.2a
+
+	- Fixed performance issue with calculating fitness.  Fitness is now
+	  assumed to be stable for a generated organism.
+
+	- prepare_fitness introduced to allow parallel processing
+	  (demo_parallel.py)
+
+	- Genome and population parameters can be defined in external ini-like
+	  config file.
+
+        - Minor performance/bugs fixes and whitespace cleanup
 
 December 12, 2005
 
