@@ -578,7 +578,7 @@ def FloatGeneFactory(name, **kw):
     of FloatGene, with class attributes
     set from keywords
     """
-    return new.classobj(name, (FloatGene,), **kw)
+    return new.classobj(name, (FloatGene,), kw)
 
 
 def IntGeneFactory(name, **kw):
@@ -587,7 +587,7 @@ def IntGeneFactory(name, **kw):
     of IntGene, with class attributes
     set from keywords
     """
-    return new.classobj(name, (IntGene,), **kw)
+    return new.classobj(name, (IntGene,), kw)
 
 
 def CharGeneFactory(name, **kw):
@@ -596,7 +596,7 @@ def CharGeneFactory(name, **kw):
     of CharGene, with class attributes
     set from keywords
     """
-    return new.classobj(name, (CharGene,), **kw)
+    return new.classobj(name, (CharGene,), kw)
 
 
 def AsciiCharGeneFactory(name, **kw):
@@ -605,7 +605,7 @@ def AsciiCharGeneFactory(name, **kw):
     of AsciiCharGene, with class attributes
     set from keywords
     """
-    return new.classobj(name, (AsciiCharGene,), **kw)
+    return new.classobj(name, (AsciiCharGene,), kw)
 
 def PrintableCharGeneFactory(name, **kw):
     """
@@ -613,7 +613,7 @@ def PrintableCharGeneFactory(name, **kw):
     of PrintableGene, with class attributes
     set from keywords
     """
-    return new.classobj(name, (AsciiCharGene,), **kw)
+    return new.classobj(name, (AsciiCharGene,), kw)
 
 def DiscreteGeneFactory(name, **kw):
     """
@@ -621,7 +621,7 @@ def DiscreteGeneFactory(name, **kw):
     of DiscreteGene, with class attributes
     set from keywords
     """
-    return new.classobj(name, (DiscreteGene,), **kw)
+    return new.classobj(name, (DiscreteGene,), kw)
 
 # utility functions
 
