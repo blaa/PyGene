@@ -110,6 +110,8 @@ pop = QPopulation()
 
 # now a func to run the population
 def main():
+    from time import time
+    s = time()
     try:
         generations = 0
         while True:
@@ -127,7 +129,7 @@ def main():
 
     except KeyboardInterrupt:
         pass
-    print "Executed", generations, "generations"
+    print "Executed", generations, "generations in", time() - s, "seconds"
 
 
 if __name__ == '__main__':

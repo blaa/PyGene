@@ -9,7 +9,7 @@ These genes work via classical Mendelian genetics
 """
 
 import sys, new
-from random import randrange, random, uniform, choice
+from random import random, randint, uniform, choice
 from math import sqrt
 
 from xmlio import PGXmlMixin
@@ -19,28 +19,28 @@ class BaseGene(PGXmlMixin):
     Base class from which all the gene classes are derived.
 
     You cannot use this class directly, because there are
-    some methods that must be overridden.    
+    some methods that must be overridden.
     """
     # each gene should have an object in
     # which its genotype should be stored
     value = None
-    
+
     # probability of a mutation occurring
     mutProb = 0.01
 
     # List of acceptable fields for the factory
     fields = ["value", "mutProb"]
-    
+
     def __init__(self):
-    
+
         # if value is not provided, it will be
         # randomly generated
         if self.__class__.value == None:
             self.value = self.randomValue()
         else:
             self.value = self.__class__.value
-    
-    
+
+
     def copy(self):
         """
         returns clone of this gene
@@ -48,73 +48,73 @@ class BaseGene(PGXmlMixin):
         cls = self.__class__()
         cls.value = self.value
         return cls
-        
-    
+
+
     def __add__(self, other):
         """
         Combines two genes in a gene pair, to produce an effect
-    
+
         This is used to determine the gene's phenotype
-    
+
         This default method computes the arithmetic mean
         of the two genes.
-    
+
         Override as needed
-    
+
         Must be overridden
         """
         raise Exception("Method __add__ must be overridden")
-    
+
     def __repr__(self):
         return "<%s:%s>" % (self.__class__.__name__, self.value)
-    
+
     # def __cmp__(this, other):
     #     return cmp(this.value, other.value)
-    # 
+    #
     def maybeMutate(self):
         if random() < self.mutProb:
             self.mutate()
-    
+
     def mutate(self):
         """
         Perform a mutation on the gene
-        
+
         You MUST override this in subclasses
         """
         raise Exception("method 'mutate' not implemented")
-    
+
     def randomValue(self):
         """
         Generates a plausible random value
         for this gene.
-        
+
         Must be overridden
         """
         raise Exception("Method 'randomValue' not implemented")
-    
+
     def xmlDumpSelf(self, doc, parent):
         """
         dump out this gene into parent tag
         """
         genetag = doc.createElement("gene")
         parent.appendChild(genetag)
-    
+
         self.xmlDumpClass(genetag)
-        
+
         self.xmlDumpAttribs(genetag)
-    
+
         # now dump out the value into a text tag
         ttag = doc.createTextNode(str(self.value))
-        
+
         # and add it to self tag
         genetag.appendChild(ttag)
-    
+
     def xmlDumpAttribs(self, tag):
         """
         sets attributes of tag
         """
         tag.setAttribute("mutProb", str(self.mutProb))
-    
+
 
 class ComplexGene(BaseGene):
     """
@@ -124,7 +124,7 @@ class ComplexGene(BaseGene):
     # by up to +/- this amount
     mutAmtReal = 0.1
     mutAmtImag = 0.1
-    
+
     # used for random gene creation
     # override in subclasses
     randMin = -1.0
@@ -137,63 +137,63 @@ class ComplexGene(BaseGene):
     def __add__(self, other):
         """
         Combines two genes in a gene pair, to produce an effect
-    
+
         This is used to determine the gene's phenotype
-    
+
         This class computes the arithmetic mean
         of the two genes' values, so is akin to incomplete
         dominance.
-    
+
         Override if desired
         """
         return (self.value + other.value) / 2
         #return abs(complex(self.value.real, other.value.imag))
-    
-    
+
+
     def mutate(self):
         """
         Mutate this gene's value by a random amount
         within the range +/- self.mutAmt
-    
+
         perform mutation IN-PLACE, ie don't return mutated copy
         """
         self.value += complex(
-            random()*self.mutAmtReal*2 - self.mutAmtReal,
-            random()*self.mutAmtImag*2 - self.mutAmtImag
+            uniform(-self.mutAmtReal, self.mutAmtReal),
+            uniform(-self.mutAmtImag, self.mutAmtImag)
             )
-    
+
         # if the gene has wandered outside the alphabet,
         # rein it back in
         real = self.value.real
         imag = self.value.imag
-        
+
         if real < self.randMin:
             real = self.randMin
         elif real > self.randMax:
             real = self.randMax
-    
+
         if imag < self.randMin:
             imag = self.randMin
         elif imag > self.randMax:
             imag = self.randMax
-    
+
         self.value = complex(real, imag)
-    
+
     def randomValue(self):
         """
         Generates a plausible random value
         for this gene.
-        
+
         Override as needed
         """
         min = self.randMin
         range = self.randMax - min
-    
-        real = random() * range + min
-        imag = random() * range + min
-    
+
+        real = uniform(self.randMin, self.randMax)
+        imag = uniform(self.randMin, self.randMax)
+
         return complex(real, imag)
-    
+
 
 class FloatGene(BaseGene):
     """
@@ -216,7 +216,7 @@ class FloatGene(BaseGene):
     # amount by which to mutate, will change value
     # by up to +/- this amount
     mutAmt = 0.1
-    
+
     # used for random gene creation
     # override in subclasses
     randMin = -1.0
@@ -224,28 +224,28 @@ class FloatGene(BaseGene):
 
     # Acceptable fields for factory
     fields = ["value", "mutProb", "mutAmt", "randMin", "randMax"]
-    
+
     def __add__(self, other):
         """
         Combines two genes in a gene pair, to produce an effect
-    
+
         This is used to determine the gene's phenotype
-    
+
         This class computes the arithmetic mean
         of the two genes' values, so is akin to incomplete
         dominance.
-    
+
         Override if desired
         """
         return (self.value + other.value) / 2
-    
+
     def mutate(self):
         """
         Mutate this gene's value by a random amount
         within the range, which is determined by
         multiplying self.mutAmt by the distance of the
         gene's current value from either endpoint of legal values
-        
+
         perform mutation IN-PLACE, ie don't return mutated copy
         """
         if random() < 0.5:
@@ -254,19 +254,17 @@ class FloatGene(BaseGene):
         else:
             # mutate upwards:
             self.value += uniform(0, self.mutAmt * (self.randMax-self.value))
-    
+
     def randomValue(self):
         """
         Generates a plausible random value
         for this gene.
-        
+
         Override as needed
         """
-        min = self.randMin
-        range = self.randMax - min
-    
-        return random() * range + min
-    
+        return uniform(self.randMin, self.randMax)
+
+
 
 class FloatGeneRandom(FloatGene):
     """
@@ -275,11 +273,11 @@ class FloatGeneRandom(FloatGene):
     def mutate(self):
         """
         Randomise the gene
-    
+
         perform mutation IN-PLACE, ie don't return mutated copy
         """
         self.value = self.randomValue()
-    
+
 
 class FloatGeneMax(FloatGene):
     """
@@ -314,44 +312,44 @@ class IntGene(BaseGene):
     # minimum possible value for gene
     # override in subclasses as needed
     randMin = -sys.maxint
-    
+
     # maximum possible value for gene
     # override in subclasses as needed
     randMax = sys.maxint + 1
-    
+
     # maximum amount by which gene can mutate
     mutAmt = 1
 
     # Acceptable fields for factory
     fields = ["value", "mutProb", "mutAmt", "randMin", "randMax"]
-    
+
     def mutate(self):
         """
         perform gene mutation
-    
+
         perform mutation IN-PLACE, ie don't return mutated copy
         """
-        self.value += randrange(-self.mutAmt, self.mutAmt + 1)
-    
+        self.value += randint(-self.mutAmt, self.mutAmt)
+
         # if the gene has wandered outside the alphabet,
         # rein it back in
         if self.value < self.randMin:
             self.value = self.randMin
         elif self.value > self.randMax:
             self.value = self.randMax
-    
+
     def randomValue(self):
         """
         return a legal random value for this gene
         which is in the range [self.randMin, self.randMax]
         """
-        return randrange(self.randMin, self.randMax+1)
-    
+        return randint(self.randMin, self.randMax)
+
     def __add__(self, other):
         """
         produces the phenotype resulting from combining
         this gene with another gene in the pair
-        
+
         returns an int value, based on a formula of higher
         numbers dominating
         """
@@ -375,49 +373,49 @@ class CharGene(BaseGene):
     # minimum possible value for gene
     # override in subclasses as needed
     randMin = chr(0)
-    
+
     # maximum possible value for gene
     # override in subclasses as needed
     randMax = chr(255)
-    
+
     def __repr__(self):
         """
         Returns safely printable value
         """
         return str(self.value)
-    
+
     def mutate(self):
         """
         perform gene mutation
-    
+
         perform mutation IN-PLACE, ie don't return mutated copy
         """
-        self.value = chr(ord(self.value) + randrange(-self.mutAmt, self.mutAmt + 1))
-    
+        self.value = chr(ord(self.value) + randint(-self.mutAmt, self.mutAmt))
+
         # if the gene has wandered outside the alphabet,
         # rein it back in
         if self.value < self.randMin:
             self.value = self.randMin
         elif self.value > self.randMax:
             self.value = self.randMax
-    
+
     def randomValue(self):
         """
         return a legal random value for this gene
         which is in the range [self.randMin, self.randMax]
         """
-        return chr(randrange(ord(self.randMin), ord(self.randMax)+1))
-    
+        return chr(randint(ord(self.randMin), ord(self.randMax)))
+
     def __add__(self, other):
         """
         produces the phenotype resulting from combining
         this gene with another gene in the pair
-        
+
         returns an int value, based on a formula of higher
         numbers dominating
         """
         return max(self.value, other.value)
-    
+
 
 class AsciiCharGene(CharGene):
     """
@@ -463,73 +461,73 @@ class DiscreteGene(BaseGene):
     """
     Gene type with a fixed set of possible values, typically
     strings
-    
+
     Mutation behaviour is that the gene's value may
     spontaneously change into one of its alleles
     """
     # this is the set of possible values
     # override in subclasses
     alleles = []
-    
+
     # the dominant allele - leave as None
     # if gene has incomplete dominance
     dominant = None
-    
+
     # the co-dominant alleles - leave empty
     # if gene has simple dominance
     codominant = []
-    
+
     # the recessive allele - leave as None if there's a dominant
     recessive = None
-    
+
     def mutate(self):
         """
         Change the gene's value into any of the possible alleles,
         subject to mutation probability 'self.mutProb'
-    
+
         perform mutation IN-PLACE, ie don't return mutated copy
         """
         self.value = self.randomValue()
-    
+
     def randomValue(self):
         """
         returns a random allele
         """
         return choice(self.alleles)
-    
+
     def __add__(self, other):
         """
         determines the phenotype, subject to dominance properties
-    
+
         returns a tuple of effects
         """
         # got simple dominance?
         if self.dominant in (self.value, other.value):
             # yes
             return (self.dominant,)
-        
+
         # got incomplete dominance?
         elif self.codominant:
             phenotype = []
             for val in self.value, other.value:
                 if val in self.codominant and val not in phenotype:
                     phenotype.append(val)
-            
+
             # apply recessive, if one exists and no codominant genes present
             if not phenotype:
                 if self.recessive:
                     phenotype.append(self.recessive)
-            
+
             # done
             return tuple(phenotype)
-        
+
         # got recessive?
         elif self.recessive:
             return (self.recessive,)
-        
+
         # nothing else
         return ()
-    
+
 class BitGene(BaseGene):
     """
     Implements a single-bit gene
@@ -539,18 +537,18 @@ class BitGene(BaseGene):
         Produces the 'phenotype' as xor of gene pair values
         """
         raise Exception("__add__ method not implemented")
-    
-    
-    
+
+
+
     def mutate(self):
         """
         mutates this gene, toggling the bit
         probabilistically
-    
+
         perform mutation IN-PLACE, ie don't return mutated copy
         """
         self.value ^= 1
-    
+
     def randomValue(self):
         """
         Returns a legal random (boolean) value
@@ -568,7 +566,7 @@ class AndBitGene(BitGene):
         Produces the 'phenotype' as xor of gene pair values
         """
         return self.value and other.value
-    
+
 
 class OrBitGene(BitGene):
     """
@@ -580,7 +578,7 @@ class OrBitGene(BitGene):
         Produces the 'phenotype' as xor of gene pair values
         """
         return self.value or other.value
-    
+
 
 
 class XorBitGene(BitGene):
@@ -633,7 +631,3 @@ def rndPair(geneclass):
     instances of the given gene class
     """
     return (geneclass(), geneclass())
-
-
-
-

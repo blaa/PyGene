@@ -50,7 +50,7 @@ class CityPriorityGene(BaseGeneClass):
     """
     randMin = geneRandMin
     randMax = geneRandMax
-    
+
     mutProb = geneMutProb
     mutAmt = geneMutAmt
 
@@ -67,15 +67,15 @@ class City:
         self.name = name
 
         # constrain city coords so they're no closer than 50 pixels
-        # to any edge, so the city names show up ok in the gui version        
+        # to any edge, so the city names show up ok in the gui version
         if x == None:
             x = random() * (width - 100) + 50
         if y == None:
             y = random() * (height - 100) + 50
-            
+
         self.x = x
         self.y = y
-    
+
     def __sub__(self, other):
         """
         compute distance between this and another city
@@ -133,7 +133,7 @@ class TSPSolution(OrganismClass):
     the TSP
     """
     genome = genome
-    
+
     mutateOneOnly = mutateOneOnly
 
     crossoverRate = crossoverRate
@@ -152,7 +152,7 @@ class TSPSolution(OrganismClass):
         # start at first city, compute distances to last
         for i in xrange(cityCount - 1):
             distance += sortedCities[i] - sortedCities[i+1]
-        
+
         # and add in the return trip
         distance += sortedCities[0] - sortedCities[-1]
 
@@ -172,7 +172,7 @@ class TSPSolution(OrganismClass):
 
         # now sort them, the priority elem will determine order
         sorter.sort()
-        
+
         # now extract the city objects
         sortedCities = [tup[1] for tup in sorter]
 
@@ -188,21 +188,21 @@ class TSPSolution(OrganismClass):
             sorter = [(genes[name][i], name) for name in cityNames]
             sorter.sort()
             sortedGenes = [tup[1] for tup in sorter]
-            
-            
+
+
 
 
 class TSPSolutionPopulation(Population):
 
     initPopulation = popInitSize
     species = TSPSolution
-    
+
     # cull to this many children after each generation
     childCull = popChildCull
-    
+
     # number of children to create after each generation
     childCount = popChildCount
-    
+
     # number of best parents to add in with next gen
     incest = popIncest
 
@@ -213,10 +213,11 @@ class TSPSolutionPopulation(Population):
     mutateAfterMating = mutateAfterMating
 
 def main():
-    
+    from time import time
+    s = time()
     # create initial population
     pop = TSPSolutionPopulation()
-    
+
     # now repeatedly calculate generations
     i = 0
 
@@ -227,18 +228,17 @@ def main():
             i += 1
     except KeyboardInterrupt:
         pass
-        
-    
+
+
     # get the best solution
     solution = pop.best()
-    
+
     # and print out the itinerary
     sortedCities = solution.getCitiesInOrder()
-    print "Best solution: total distance %04.2f:" % solution.fitness()
+    print "Best solution: total distance %04.2f in %.3f seconds:" % (
+        solution.fitness(), time() - s)
     for city in sortedCities:
         print "  x=%03.2f y=%03.2f %s" % (city.x, city.y, city.name)
 
 if __name__ == '__main__':
     main()
-
-
