@@ -14,21 +14,11 @@ from pygene.population import Population
 # are trying to evolve into
 teststr = "hackthis"
 
-teststrlen = len(teststr)
-
 # convert the string into a list of floats, where
 # each float is the ascii value of the corresponding
 # char
 
 teststrNums = [float(ord(c)) for c in teststr]
-
-# generate a set of 'gene names', one for each char in the string
-geneNames = []
-for i in range(len(teststr)):
-    geneNames.append("c%s" % i)
-
-# the alphabet from which we're picking genes' values
-alphabet = "abcdefghijklmnopqrstuvwxyz"
 
 # derive a gene which holds a character, and can
 # mutate into another character
@@ -48,7 +38,6 @@ for i in range(len(teststr)):
 # an organism that evolves towards the required string
 
 class StringHacker(MendelOrganism):
-#class StringHacker(Organism):
     
     genome = genome
 
@@ -82,9 +71,12 @@ class StringHacker(MendelOrganism):
         return diffs
 
 class StringHackerPopulation(Population):
-
-    initPopulation = 10
+    
+    # Population species
     species = StringHacker
+
+    # start with a population of 10 random organisms
+    initPopulation = 10
     
     # cull to this many children after each generation
     childCull = 10
@@ -92,10 +84,12 @@ class StringHackerPopulation(Population):
     # number of children to create after each generation
     childCount = 40
     
-# start with a population of 10 random organisms
-ph = StringHackerPopulation()
 
 def main(nfittest=10, nkids=100):
+    # Create initial population
+    ph = StringHackerPopulation()
+
+    # Iterate over generations
     i = 0
     while True:
         b = ph.best()

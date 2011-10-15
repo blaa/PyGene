@@ -16,8 +16,6 @@ from pygene.population import Population
 # are trying to evolve into
 teststr = "hackthis"
 
-teststrlen = len(teststr)
-
 # convert the string into a list of floats, where
 # each float is the ascii value of the corresponding
 # char
