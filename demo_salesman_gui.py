@@ -8,7 +8,10 @@ pyFLTK widgets (http://pyfltk.sourceforge.net)
 
 from fltk import *
 
-import psyco
+try:
+    import psyco
+except ImportError:
+    psyco = None 
 
 from threading import Lock
 from thread import start_new_thread
@@ -268,6 +271,7 @@ class TSPCanvas(Fl_Box):
     
         # draw the city names
         fl_color(FL_BLACK)
+        fl_font(FL_HELVETICA, 16)
         for city in order:
             fl_draw(city.name, int(city.x), int(city.y))    
     
@@ -322,7 +326,7 @@ class TSPGui:
             self.x, self.y,
             self.w, self.h,
             "pygene Travelling Salesman solver")
-    
+        
         self.xdraw = 5
         self.ydraw = 5
         self.wdraw = self.w - 10
@@ -352,7 +356,7 @@ class TSPGui:
         self.ngens = 0
         self.nimp = 0
         self.bestFitness = 9999999999999999999
-    
+        
     def run(self):
         """
         Runs the population
@@ -425,7 +429,9 @@ def main():
     # build and run the gui    
     gui = TSPGui()
 
-    #psyco.full()
+    if psyco:
+        print "Starting psyco"
+        psyco.full()
 
     gui.run()
 
