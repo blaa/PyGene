@@ -369,6 +369,10 @@ class ProgOrganism(BaseOrganism):
         """
         Creates this organism
         """
+
+        # Cache fitness
+        self.fitness_cache = None
+
         if root == None:
             root = self.genNode()
     
