@@ -86,7 +86,7 @@ class BaseOrganism(PGXmlMixin):
         """
         Return fitness from the cache, and if needed - calculate it.
         """
-        if self.fitness_cache is not None:
+        if hasattr(self, 'fitness_cache') and self.fitness_cache is not None:
             return self.fitness_cache
         else:
             self.fitness_cache = self.fitness()
