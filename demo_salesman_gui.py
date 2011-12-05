@@ -6,7 +6,12 @@ that displays solutions in a graphical window, using the
 pyFLTK widgets (http://pyfltk.sourceforge.net)
 """
 
-from fltk import *
+try:
+    from fltk import *
+except ImportError:
+    print "This demo requires fltk installed in order to work!"
+    import sys
+    sys.exit(1)
 
 try:
     import psyco

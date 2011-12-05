@@ -71,7 +71,7 @@ class StringHacker(MendelOrganism):
         return diffs
 
 class StringHackerPopulation(Population):
-    
+ 
     # Population species
     species = StringHacker
 
