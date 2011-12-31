@@ -271,7 +271,7 @@ class Organism(BaseOrganism):
             if not ourGene:
                 ourGene = cls()
 
-            partnerGene = self.genes.get(name, None)
+            partnerGene = partner.genes.get(name, None)
             if not partnerGene:
                 partnerGene = cls()
 
