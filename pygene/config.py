@@ -56,10 +56,11 @@ def _floatcast(section, key, value):
 
 class ConfigLoader(object):
 
-    def __init__(self, filename, require_genes=[]):
+    def __init__(self, filename, require_genes=[], config_contents=None):
         """
         Genome loader.
-        Filename - path to configuration
+        Filename - path to configuration (alternatively you can pass the config
+          contents via the config_contents and pass None as the filename).
         If require_genes are passed after the loading we ensure that
         they exist.
         """
@@ -85,7 +86,12 @@ class ConfigLoader(object):
 
         self.config = ConfigParser.RawConfigParser()
         self.config.optionxform = str # Don't lower() names
-        self.config.read(filename)
+
+        if filename is None and config_contents is not None:
+            import io
+            self.config.readfp(io.BytesIO(config_contents))
+        else:
+            self.config.read(filename)
 
         # Do we have a population definition also?
         self._pre_parse_population()
@@ -146,7 +152,7 @@ class ConfigLoader(object):
         config - ConfigParser instance
         section - gene name / config section name
         """
-        # This check won't work because of configparser:
+        # FIXME: This check won't work because of configparser:
         if section in self.genome:
             raise LoaderError("Gene %s was already defined" % section_)
 
