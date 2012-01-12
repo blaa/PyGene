@@ -154,7 +154,7 @@ class ConfigLoader(object):
         """
         # FIXME: This check won't work because of configparser:
         if section in self.genome:
-            raise LoaderError("Gene %s was already defined" % section_)
+            raise LoaderError("Gene %s was already defined" % section)
 
         try:
             typename = self.config.get(section, 'type')
@@ -194,7 +194,7 @@ class ConfigLoader(object):
                 if alias not in self.genome:
                     raise LoaderError(("Gene %s is an alias for non-existing gene %s. "
                                        "Order matters!") % (section, alias))
-                genome[section] = self.genome[alias]
+                self.genome[section] = self.genome[alias]
                 continue
             else:
                 gene = self._parse_gene(section)

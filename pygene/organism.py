@@ -550,11 +550,6 @@ class MendelOrganism(BaseOrganism):
         child2 = self.__class__(ourGametes[1], partnerGametes[0])
         return (child1, child2)
 
-        # old single-child impl
-        child = self.__class__(self.split(), partner.split())
-        # look what the stork brought in!
-        return child
-
     def __getitem__(self, item):
         """
         allows shorthand for querying the phenotype
@@ -596,6 +591,9 @@ class MendelOrganism(BaseOrganism):
         except:
             #print "self.genes[%s] = %s" % (geneName, self.genes[geneName])
             raise
+
+        # FIXME: There's an error here for sure. The code is unreachable
+        # Maybe it is supposed to be turned off.
 
         # get the genes in question
         gene1, gene2 = self.genes[geneName]

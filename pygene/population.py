@@ -119,7 +119,7 @@ class Population(PGXmlMixin):
         for arg in args:
             if isinstance(arg, tuple) or isinstance(arg, list):
                 # got a list of things, add them one by one
-                self.add(*item)
+                self.add(*arg)
 
             if isinstance(arg, BaseOrganism):
                 # add single organism
