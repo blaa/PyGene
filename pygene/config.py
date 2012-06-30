@@ -64,7 +64,6 @@ class ConfigLoader(object):
         If require_genes are passed after the loading we ensure that
         they exist.
         """
-
         # Dictionary of supported types into casts and factories
         self.types = {
             'int': (_intcast, IntGeneFactory),
@@ -97,8 +96,6 @@ class ConfigLoader(object):
         self._pre_parse_population()
 
 
-
-
     def register_type(self, typename, cast, factory):
         """
         User can register his types using this method
@@ -109,7 +106,8 @@ class ConfigLoader(object):
         self.has_population = self.config.has_section('population')
         try:
             genes = self.config.get('population', 'genes')
-            genes = [gene.strip() for gene in genes.split(" ")]
+            genes = [gene.strip()
+                     for gene in genes.split()]
             self.genes = genes if genes else None
         except NoOptionError:
             self.genes = None
@@ -152,9 +150,22 @@ class ConfigLoader(object):
         config - ConfigParser instance
         section - gene name / config section name
         """
+        genename = section
+
+        if not self.config.has_section(genename):
+            raise LoaderError("Gene %s has no section in the config file" % genename)
+
         # FIXME: This check won't work because of configparser:
-        if section in self.genome:
+        if genename in self.genome:
             raise LoaderError("Gene %s was already defined" % section)
+
+        try:
+            clonegene = self.config.get(section, 'clone')
+            if not self.config.has_section(clonegene):
+                raise LoaderError("Gene %s is cloning a gene %s which is not yet defined" % (genename, clonegene))
+            section = clonegene
+        except NoOptionError:
+            pass
 
         try:
             typename = self.config.get(section, 'type')
@@ -176,7 +187,7 @@ class ConfigLoader(object):
             else:
                 converted = cast(section, key, value)
             args[key] = converted
-        gene = factory(typename + "_" + section, **args)
+        gene = factory(typename + "_" + genename, **args)
         return gene
 
     def load_genome(self):
