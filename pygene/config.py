@@ -164,6 +164,7 @@ class ConfigLoader(object):
             if not self.config.has_section(clonegene):
                 raise LoaderError("Gene %s is cloning a gene %s which is not yet defined" % (genename, clonegene))
             section = clonegene
+            genename = clonegene
         except NoOptionError:
             pass
 
