@@ -26,8 +26,9 @@ from ConfigParser import NoOptionError
 
 from gene import ComplexGeneFactory
 from gene import IntGeneFactory, IntGeneExchangeFactory
+from gene import IntGeneAverageFactory, IntGeneRandRangeFactory
 from gene import FloatGeneFactory, FloatGeneRandomFactory, FloatGeneMaxFactory
-from gene import FloatGeneExchangeFactory
+from gene import FloatGeneExchangeFactory, FloatGeneRandRangeFactory
 
 class LoaderError(Exception):
     pass
@@ -68,8 +69,12 @@ class ConfigLoader(object):
         self.types = {
             'int': (_intcast, IntGeneFactory),
             'int_exchange': (_intcast, IntGeneExchangeFactory),
+            'int_average': (_intcast, IntGeneAverageFactory),
+            'int_randrange': (_intcast, IntGeneRandRangeFactory),
 
             'float': (_floatcast, FloatGeneFactory),
+            'float_average': (_floatcast, FloatGeneFactory), # The same as float.
+            'float_randrange': (_floatcast, FloatGeneRandRangeFactory),
             'float_exchange': (_floatcast, FloatGeneExchangeFactory),
             'float_random': (_floatcast, FloatGeneRandomFactory),
             'float_max': (_floatcast, FloatGeneMaxFactory),
@@ -188,6 +193,15 @@ class ConfigLoader(object):
             else:
                 converted = cast(section, key, value)
             args[key] = converted
+
+        if 'randMin' in args and 'randMax' in args:
+            if args['randMin'] > args['randMax']:
+                raise LoaderError('randMin higher than randMax in section/gene %s' % section)
+            if ('value' in args and args['value'] is not None
+                and (args['value'] > args['randMax']
+                     or args['value'] < args['randMin'])):
+                raise LoaderError('value not within randMin, randMax in section/gene %s' % section)
+
         gene = factory(typename + "_" + genename, **args)
         return gene
 

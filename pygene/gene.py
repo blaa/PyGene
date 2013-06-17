@@ -146,7 +146,7 @@ class ComplexGene(BaseGene):
 
         Override if desired
         """
-        return (self.value + other.value) / 2
+        return (self.value + other.value) / 2.0
         #return abs(complex(self.value.real, other.value.imag))
 
 
@@ -237,7 +237,7 @@ class FloatGene(BaseGene):
 
         Override if desired
         """
-        return (self.value + other.value) / 2
+        return (self.value + other.value) / 2.0
 
     def mutate(self):
         """
@@ -254,6 +254,7 @@ class FloatGene(BaseGene):
         else:
             # mutate upwards:
             self.value += uniform(0, self.mutAmt * (self.randMax-self.value))
+
 
     def randomValue(self):
         """
@@ -277,6 +278,16 @@ class FloatGeneRandom(FloatGene):
         perform mutation IN-PLACE, ie don't return mutated copy
         """
         self.value = self.randomValue()
+
+class FloatGeneRandRange(FloatGene):
+    def __add__(self, other):
+        """
+        A variation of float gene where during the mixing a random value
+        from within range created by the two genes is selected.
+        """
+        start = min([self.value, other.value])
+        end = max([self.value, other.value])
+        return uniform(start, end)
 
 
 class FloatGeneMax(FloatGene):
@@ -363,6 +374,26 @@ class IntGeneExchange(IntGene):
         random gene is selected instead of max.
         """
         return choice([self.value, other.value])
+
+
+class IntGeneAverage(IntGene):
+    def __add__(self, other):
+        """
+        A variation of int gene where during the mixing a
+        average of two genes is selected.
+        """
+        return (self.value + other.value) / 2
+
+
+class IntGeneRandRange(IntGene):
+    def __add__(self, other):
+        """
+        A variation of int gene where during the mixing a random value
+        from within range created by the two genes is selected.
+        """
+        start = min([self.value, other.value])
+        end = max([self.value, other.value])
+        return randint(start, end)
 
 
 class CharGene(BaseGene):
@@ -613,10 +644,13 @@ DiscreteGeneFactory = _new_factory(DiscreteGene)
 FloatGeneFactory         = _new_factory(FloatGene)
 FloatGeneMaxFactory      = _new_factory(FloatGeneMax)
 FloatGeneRandomFactory   = _new_factory(FloatGeneRandom)
+FloatGeneRandRangeFactory = _new_factory(FloatGeneRandRange)
 FloatGeneExchangeFactory = _new_factory(FloatGeneExchange)
 
-IntGeneFactory         = _new_factory(IntGene)
-IntGeneExchangeFactory = _new_factory(IntGeneExchange)
+IntGeneFactory          = _new_factory(IntGene)
+IntGeneExchangeFactory  = _new_factory(IntGeneExchange)
+IntGeneAverageFactory   = _new_factory(IntGeneAverage)
+IntGeneRandRangeFactory = _new_factory(IntGeneRandRange)
 
 CharGeneFactory          = _new_factory(CharGene)
 AsciiCharGeneFactory     = _new_factory(AsciiCharGene)
