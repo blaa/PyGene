@@ -13,6 +13,10 @@ from organism import BaseOrganism
 
 from xmlio import PGXmlMixin
 
+
+class TypeDoesNotExist(Exception):
+    pass
+
 #@-node:imports
 #@+node:class BaseNode
 class BaseNode:
@@ -39,23 +43,36 @@ class FuncNode(BaseNode):
     """
     #@    @+others
     #@+node:__init__
-    def __init__(self, org, depth, name=None, children=None):
+    def __init__(self, org, depth, name=None, children=None, type_=None):
         """
         creates this func node
         """
         self.org = org
+        if org.type and type_:
+            options = filter(lambda x: x[-1][0] == type_, org.funcsList)
+        else:
+            options = org.funcsList
+            
+        if not options:
+            raise TypeDoesNotExist
     
         if name == None:
             # randomly choose a func
-            name, func, nargs = choice(org.funcsList)
+            name, func, nargs, typed = choice(options)
         else:
             # lookup func in organism
-            func, nargs = org.funcsDict[name]
+            func, nargs, typed = org.funcsDict[name]
         
         # and fill in the args, from given, or randomly
         if not children:
-            children = [org.genNode(depth+1) for i in xrange(nargs)]
-    
+            if typed:
+                children = [org.genNode(depth+1, typed[1+i]) for i in xrange(nargs)]
+            else:
+                children = [org.genNode(depth+1) for i in xrange(nargs)]
+        
+            
+        self.type = org.type and typed[0] or None
+        self.argtype = org.type and typed[1:] or []
         self.name = name
         self.func = func
         self.nargs = nargs
@@ -84,8 +101,18 @@ class FuncNode(BaseNode):
         #    vars,
         #    args
         #    )
-    
-        return self.func(*args)
+        
+        if self.argtype:
+            for pair in zip(self.argtype,self.children):
+                if pair[0] != pair[1].type:
+                    print "expected %s found %s" % (pair[0], pair[1].name)
+                    print (pair[1]).__class__
+                    import sys
+                    sys.exit()
+            
+        t = self.func(*args)
+        #print self.name, args, t
+        return t
     
     #@-node:calc
     #@+node:dump
@@ -184,7 +211,7 @@ class FuncNode(BaseNode):
     
         # mutate this node - replace one of its children
         mutIdx = randrange(0, self.nargs)
-        self.children[mutIdx] = self.org.genNode(depth+1)
+        self.children[mutIdx] = self.org.genNode(depth+1, self.type)
     
         #print "mutate: depth=%s" % depth
     
@@ -208,15 +235,24 @@ class ConstNode(TerminalNode):
     """
     #@    @+others
     #@+node:__init__
-    def __init__(self, org, value=None):
+    def __init__(self, org, value=None, type_=None):
         """
         """
         self.org = org
     
         if value == None:
-            value = choice(org.consts)
-    
+            if type_:
+                options = filter(lambda x: type(x) == type_, org.consts)
+            else:
+                options = org.consts
+            if options:
+                value = choice(options)
+            else:
+                raise TypeDoesNotExist
+
         self.value = value
+        self.type = type_ or type(value)
+        self.name = str(value)
     
         
     #@nonl
@@ -257,16 +293,24 @@ class VarNode(TerminalNode):
     """
     #@    @+others
     #@+node:__init__
-    def __init__(self, org, name=None):
+    def __init__(self, org, name=None, type_=None):
         """
         Inits this node as a var placeholder
         """
         self.org = org
     
         if name == None:
-            name = choice(org.vars)
+            if org.type and type_:
+                options = filter(lambda x: org.funcsVars[x] == type_, org.vars)
+            else:
+                options = org.vars
+            if options:
+                name = choice(options)
+            else:
+                raise TypeDoesNotExist
         
         self.name = name
+        self.type = org.type and org.funcsVars[name] or None
     
     #@-node:__init__
     #@+node:calc
@@ -310,27 +354,37 @@ class ProgOrganismMetaclass(type):
     """
     #@    @+others
     #@+node:__init__
-    def __init__(cls, name, bases, dict):
+    def __init__(cls, name, bases, data):
         """
         Create the ProgOrganism class object
         """
         # parent constructor
-        object.__init__(cls, name, bases, dict)
+        object.__init__(cls, name, bases, data)
     
         # get the funcs, consts and vars class attribs
-        funcs = dict['funcs']
-        consts = dict['consts']
-        vars = dict['vars']
+        funcs = data['funcs']
+        consts = data['consts']
+        vars = data['vars']
         
         # process the funcs
         funcsList = []
         funcsDict = {}
+        funcsVars = {}
         for name, func in funcs.items():
-            funcsList.append((name, func, func.func_code.co_argcount))
-            funcsDict[name] = (func, func.func_code.co_argcount)
-    
+            try:
+                types = func._types
+            except:
+                types = None
+            funcsList.append((name, func, func.func_code.co_argcount, types))
+            funcsDict[name] = (func, func.func_code.co_argcount, types)
+        if cls.type:
+            funcsVars = dict(tuple(vars))
+            vars = map(lambda x: x[0], vars)      
+            
+        cls.vars = vars
         cls.funcsList = funcsList
         cls.funcsDict = funcsDict
+        cls.funcsVars = funcsVars
     
     #@-node:__init__
     #@-others
@@ -356,6 +410,7 @@ class ProgOrganism(BaseOrganism):
     funcs = {}
     vars = []
     consts = []
+    type = None
     
     # maximum tree depth when generating randomly
     maxDepth = 4
@@ -374,7 +429,7 @@ class ProgOrganism(BaseOrganism):
         self.fitness_cache = None
 
         if root == None:
-            root = self.genNode()
+            root = self.genNode(type_=self.type)
     
         self.tree = root
     
@@ -457,22 +512,26 @@ class ProgOrganism(BaseOrganism):
     
     #@-node:dump
     #@+node:genNode
-    def genNode(self, depth=1):
+    def genNode(self, depth=1, type_=None):
         """
         Randomly generates a node to build in
         to this organism
         """
+        while True:
+            try:
+                if depth > 1 and (depth >= self.initDepth or flipCoin()):
+                    # not root, and either maxed depth, or 50-50 chance
+                    if flipCoin():
+                        # choose a var
+                        return VarNode(self, type_=type_)
+                    else:
+                        return ConstNode(self, type_=type_)
     
-        if depth > 1 and (depth >= self.initDepth or flipCoin()):
-            # not root, and either maxed depth, or 50-50 chance
-            if flipCoin():
-                # choose a var
-                return VarNode(self)
-            else:
-                return ConstNode(self)
-    
-        # either root, or not maxed, or 50-50 chance
-        return FuncNode(self, depth)
+                # either root, or not maxed, or 50-50 chance
+                return FuncNode(self, depth, type_=type_)
+            except TypeDoesNotExist:
+                continue
+                
     
     #@-node:genNode
     #@+node:xmlDumpSelf
@@ -556,3 +615,11 @@ def flipCoin():
 
 #@-node:@file pygene/prog.py
 #@-leo
+
+
+def typed(*args):
+    def typed_decorator(f):
+        f._types = args
+        return f
+    return typed_decorator
+    
