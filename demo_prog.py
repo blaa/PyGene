@@ -79,7 +79,7 @@ def sin(x):
     except:
         #raise
         return x
-    
+
 def cos(x):
     #print "cos: x=%s" % repr(x)
     try:
@@ -87,7 +87,7 @@ def cos(x):
     except:
         #raise
         return x
-        
+
 def tan(x):
     #print "tan: x=%s" % repr(x)
     try:
@@ -117,13 +117,11 @@ class MyProg(ProgOrganism):
 
     testVals = [{'x':uniform(-10.0, 10.0),
                  'y':uniform(-10.0, 10.0),
-                 } \
-                     for i in xrange(20)
+                 } for i in xrange(20)
                 ]
 
     mutProb = 0.4
 
-    
     def testFunc(self, **vars):
         """
         Just wanting to model x^2 + y
@@ -139,16 +137,16 @@ class MyProg(ProgOrganism):
             return badness
         except OverflowError:
             return 1.0e+255 # infinitely bad
-        
+
     # maximum tree depth when generating randomly
     initDepth = 6
 
-# now create the population class
+
 class ProgPop(Population):
-    
+    u"Population class for the experiment"
     species = MyProg
     initPopulation = 10
-    
+
     # cull to this many children after each generation
     childCull = 20
 
@@ -157,26 +155,41 @@ class ProgPop(Population):
 
     mutants = 0.3
 
+def graph(orig, best):
+    "Graph on -10, 10 ranges"
+    print "ORIG                                  BEST:"
+    for y in range(10, -11, -2):
+        for x in range(-10, 11, 3):
+            z = orig(x=float(x), y=float(y))
+            print "%03.0f " % z,
 
-pop = ProgPop()
+        print "  ",
+        for x in range(-10, 11, 3):
+            z = best(x=float(x), y=float(y))
+            print "%03.0f " % z,
+        print
+
 
 def main(nfittest=10, nkids=100):
-    
-    global pop
+
+    pop = ProgPop()
 
     ngens = 0
     i = 0
     while True:
         b = pop.best()
-        b.dump()
-        print "generation %s: %s best=%s average=%s)" % (
+        print "Generation %s: %s best=%s average=%s)" % (
             i, str(b), b.fitness(), pop.fitness())
+        b.dump()
+
+        graph(b.testFunc, b.calc)
+
         if b.fitness() <= 0:
             print "cracked!"
             break
         i += 1
         ngens += 1
-        
+
         if ngens < 100:
             pop.gen()
         else:
@@ -187,4 +200,3 @@ def main(nfittest=10, nkids=100):
 if __name__ == '__main__':
     main()
     pass
-
