@@ -1,11 +1,7 @@
-#@+leo-ver=4
-#@+node:@file pygene/prog.py
 """
 Implements genetic programming organisms.
 """
 
-#@+others
-#@+node:imports
 from random import random, randrange, choice
 from math import sqrt
 
@@ -18,14 +14,10 @@ class TypeDoesNotExist(Exception):
     u"""Parameters does not allow to construct a tree."""
     pass
 
-#@-node:imports
-#@+node:class BaseNode
 class BaseNode:
     """
     Base class for genetic programming nodes
     """
-    #@    @+others
-    #@+node:calc
     def calc(self, **vars):
         """
         evaluates this node, plugging vars into
@@ -33,17 +25,10 @@ class BaseNode:
         """
         raise Exception("method 'calc' not implemented")
 
-    #@-node:calc
-    #@-others
-
-#@-node:class BaseNode
-#@+node:class FuncNode
 class FuncNode(BaseNode):
     """
     Node which holds a function and its argument nodes
     """
-    #@    @+others
-    #@+node:__init__
     def __init__(self, org, depth, name=None, children=None, type_=None):
         """
         creates this func node
@@ -82,9 +67,18 @@ class FuncNode(BaseNode):
         # Additional type check
         self.check_types()
 
+    def calc_nodes(self):
+        "Return number of nodes in equation"
+        cnt = [0]
+        def dfs(node):
+            cnt[0] += 1
+            if isinstance(node, FuncNode):
+                for child in node.children:
+                    dfs(child)
 
-    #@-node:__init__
-    #@+node:calc
+        dfs(self)
+        return cnt[0]
+
     def calc(self, **vars):
         """
         evaluates this node, plugging vars into
@@ -138,8 +132,6 @@ class FuncNode(BaseNode):
 
         return t
 
-    #@-node:calc
-    #@+node:dump
     def dump(self, level=0):
         indents = "  " * level
         #print indents + "func:" + self.name
@@ -170,8 +162,6 @@ class FuncNode(BaseNode):
                 print
                 raise TypeError
 
-    #@-node:dump
-    #@+node:copy
     def copy(self, doSplit=False):
         """
         Copies this node and recursively its children, returning
@@ -237,8 +227,6 @@ class FuncNode(BaseNode):
             copy = FuncNode(self.org, 0, self.name, clonedChildren, type_=self.type)
             return copy, fragment, lst, idx
 
-    #@-node:copy
-    #@+node:mutate
     def mutate(self, depth):
         """
         randomly mutates either this tree, or a child
@@ -258,26 +246,16 @@ class FuncNode(BaseNode):
 
         #print "mutate: depth=%s" % depth
 
-    #@-node:mutate
-    #@-others
 
-#@-node:class FuncNode
-#@+node:class TerminalNode
 class TerminalNode(BaseNode):
     """
     Holds a terminal value
     """
-    #@    @+others
-    #@-others
 
-#@-node:class TerminalNode
-#@+node:class ConstNode
 class ConstNode(TerminalNode):
     """
     Holds a constant value
     """
-    #@    @+others
-    #@+node:__init__
     def __init__(self, org, value=None, type_=None):
         """
         """
@@ -298,9 +276,6 @@ class ConstNode(TerminalNode):
         self.name = str(value)
 
 
-    #@nonl
-    #@-node:__init__
-    #@+node:calc
     def calc(self, **vars):
         """
         evaluates this node, returns value
@@ -308,33 +283,22 @@ class ConstNode(TerminalNode):
         # easy
         return self.value
 
-    #@-node:calc
-    #@+node:dump
     def dump(self, level=0):
         indents = "  " * level
         #print "%sconst: {%s}" % (indents, self.value)
         print "%s{%s}" % (indents, self.value)
 
-    #@-node:dump
-    #@+node:copy
     def copy(self):
         """
         clone this node
         """
         return ConstNode(self.org, self.value, type_=self.type)
 
-    #@-node:copy
-    #@-others
 
-
-#@-node:class ConstNode
-#@+node:class VarNode
 class VarNode(TerminalNode):
     """
     Holds a variable
     """
-    #@    @+others
-    #@+node:__init__
     def __init__(self, org, name=None, type_=None):
         """
         Inits this node as a var placeholder
@@ -355,8 +319,6 @@ class VarNode(TerminalNode):
         self.name = name
         self.type = org.type and org.funcsVars[name] or None
 
-    #@-node:__init__
-    #@+node:calc
     def calc(self, **vars):
         """
         Calculates val of this node
@@ -368,35 +330,25 @@ class VarNode(TerminalNode):
         #    vars,
         #    )
         return val
-    #@-node:calc
-    #@+node:dump
+
     def dump(self, level=0):
 
         indents = "  " * level
         #print indents + "var {" + self.name + "}"
         print "%s{%s}" % (indents, self.name)
 
-    #@-node:dump
-    #@+node:copy
     def copy(self):
         """
         clone this node
         """
         return VarNode(self.org, self.name, type_=self.type)
 
-    #@-node:copy
-    #@-others
-
-#@-node:class VarNode
-#@+node:class ProgOrganismMetaclass
 class ProgOrganismMetaclass(type):
     """
     A metaclass which analyses class attributes
     of a ProgOrganism subclass, and builds the
     list of functions and terminals
     """
-    #@    @+others
-    #@+node:__init__
     def __init__(cls, name, bases, data):
         """
         Create the ProgOrganism class object
@@ -429,11 +381,6 @@ class ProgOrganismMetaclass(type):
         cls.funcsDict = funcsDict
         cls.funcsVars = funcsVars
 
-    #@-node:__init__
-    #@-others
-
-#@-node:class ProgOrganismMetaclass
-#@+node:class ProgOrganism
 class ProgOrganism(BaseOrganism):
     """
     Implements an organism for genetic programming
@@ -446,8 +393,6 @@ class ProgOrganism(BaseOrganism):
         - vars - a list of variable names
         - consts - a list of constant values
     """
-    #@    @+others
-    #@+node:attribs
     __metaclass__ = ProgOrganismMetaclass
 
     funcs = {}
@@ -461,8 +406,6 @@ class ProgOrganism(BaseOrganism):
     # probability of a mutation occurring
     mutProb = 0.01
 
-    #@-node:attribs
-    #@+node:__init__
     def __init__(self, root=None):
         """
         Creates this organism
@@ -476,8 +419,6 @@ class ProgOrganism(BaseOrganism):
 
         self.tree = root
 
-    #@-node:__init__
-    #@+node:mate
     def mate(self, mate):
         """
         Perform recombination of subtree elements
@@ -515,8 +456,6 @@ class ProgOrganism(BaseOrganism):
 
         return (child1, child2)
 
-    #@-node:mate
-    #@+node:mutate
     def mutate(self):
         """
         Mutates this organism's node tree
@@ -527,8 +466,6 @@ class ProgOrganism(BaseOrganism):
         mutant.tree.mutate(1)
         return mutant
 
-    #@-node:mutate
-    #@+node:split
     def split(self):
         """
         support for recombination, returns a tuple
@@ -545,8 +482,10 @@ class ProgOrganism(BaseOrganism):
         copy, subtree, lst, idx = self.tree.copy(True)
         return (copy, subtree, lst, idx)
 
-    #@-node:split
-    #@+node:copy
+    def calc_nodes(self):
+        u"Calculate nodes in equation"
+        return self.tree.calc_nodes()
+    
     def copy(self):
         """
         returns a deep copy of this organism
@@ -557,17 +496,12 @@ class ProgOrganism(BaseOrganism):
             print "self.__class__ = %s" % self.__class__
             raise
 
-
-    #@-node:copy
-    #@+node:dump
     def dump(self, node=None, level=1):
         """
         prints out this organism's node tree
         """
         self.tree.dump(1)
 
-    #@-node:dump
-    #@+node:genNode
     def genNode(self, depth=1, type_=None):
         """
         Randomly generates a node to build in
@@ -596,8 +530,6 @@ class ProgOrganism(BaseOrganism):
                 continue
 
 
-    #@-node:genNode
-    #@+node:xmlDumpSelf
     def xmlDumpSelf(self, doc, parent):
         """
         Dumps out this object's contents into an xml tree
@@ -609,8 +541,6 @@ class ProgOrganism(BaseOrganism):
         """
         raise Exception("method xmlDumpSelf not implemented")
 
-    #@-node:xmlDumpSelf
-    #@+node:fitness
     def fitness(self):
         """
         Return the fitness level of this organism, as a float
@@ -630,8 +560,6 @@ class ProgOrganism(BaseOrganism):
         """
         raise Exception("Method 'fitness' not implemented")
 
-    #@-node:fitness
-    #@+node:testFunc
     def testFunc(self, **kw):
         """
         this is the 'reference function' toward which
@@ -641,8 +569,6 @@ class ProgOrganism(BaseOrganism):
         """
         raise Exception("method 'testFunc' not implemented")
 
-    #@-node:testFunc
-    #@+node:calc
     def calc(self, **vars):
         """
         Executes this program organism, using the given
@@ -654,30 +580,11 @@ class ProgOrganism(BaseOrganism):
 
         return self.tree.calc(**vars)
 
-    #@-node:calc
-    #@-others
-
-
-#@-node:class ProgOrganism
-#@+node:funcs
-# util funcs
-
-#@+others
-#@+node:flipCoin
 def flipCoin():
     """
     randomly returns True/False
     """
     return choice((True, False))
-
-#@-node:flipCoin
-#@-others
-
-#@-node:funcs
-#@-others
-
-#@-node:@file pygene/prog.py
-#@-leo
 
 
 def typed(*args):

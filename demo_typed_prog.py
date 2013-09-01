@@ -98,6 +98,9 @@ class MyTypedProg(ProgOrganism):
         try:
             for vars in self.testVals:
                 badness += (self.calc(**vars) - self.testFunc(**vars)) ** 2
+
+            # Additionaly to correct solutions - promote short solutions.
+            badness += self.calc_nodes() / 70.0
             return badness
         except OverflowError:
             return 1.0e+255 # infinitely bad
@@ -132,8 +135,6 @@ def graph(orig, best):
         for x in range(-10, 11, 3):
             z = best(x=float(x), y=float(y))
             print "%03.0f " % z,
-
-
         print
 
 def main(nfittest=10, nkids=100):
@@ -147,16 +148,16 @@ def main(nfittest=10, nkids=100):
             ngens, str(b), b.fitness(), pop.fitness())
         b.dump(1)
         graph(b.testFunc, b.calc)
-        if b.fitness() <= 0.0:
+        if b.fitness() <= 0.4:
             print "Cracked!"
             break
         i += 1
         ngens += 1
 
-        if ngens < 30:
+        if ngens < 100:
             pop.gen()
         else:
-            print "Failed after 30 generations, restarting"
+            print "Failed after 100 generations, restarting"
             time.sleep(1)
             pop = TypedProgPop()
             ngens = 0
