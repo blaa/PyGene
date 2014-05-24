@@ -184,7 +184,8 @@ class Population(PGXmlMixin):
         if self.numNewOrganisms:
             #print "adding %d new organisms" % self.numNewOrganisms
             for i in xrange(self.numNewOrganisms):
-                self.add(self.__class__())
+                self.add(self.species())
+
 
         # we use square root to skew the selection probability to
         # the fittest
@@ -201,6 +202,7 @@ class Population(PGXmlMixin):
         #    stats[j] = 0
 
         # wild orgy, have lots of children
+        nchildren = 1 if nchildren == 1 else nchildren / 2
         for i in xrange(nchildren):
             # pick one parent randomly, favouring fittest
             idx1 = idx2 = int(sqrt(randrange(n2adults)))
@@ -229,6 +231,7 @@ class Population(PGXmlMixin):
 
             children.extend([child1, child2])
 
+
         # if incestuous, add in best adults
         if self.incest:
             children.extend(self[:self.incest])
@@ -246,11 +249,13 @@ class Population(PGXmlMixin):
             mutants = []
             numMutants = int(nchildren * self.mutants)
 
-            if 1:
+            # children[0] - fittest
+            # children[-1] - worse fitness
+            if 0:
                 for i in xrange(numMutants):
                     # pick one parent randomly, favouring fittest
                     idx = int(sqrt(randrange(n2children)))
-                    #child = children[nchildren - idx - 1]
+
                     child = children[-idx]
                     mutant = child.mutate()
                     mutant.prepare_fitness()
