@@ -24,8 +24,8 @@ geneMutProb = 0.1
 geneMutAmt = .5         # only if not using FloatGeneRandom
 
 popInitSize = 10
-popChildCull = 20
-popChildCount = 100
+popChildCull = 30
+popChildCount = 200
 popIncest = 10           # number of best parents to add to children
 popNumMutants = 0.7     # proportion of mutants each generation
 popNumRandomOrganisms = 0  # number of random organisms per generation
@@ -227,7 +227,7 @@ def main():
             pop.gen()
             i += 1
     except KeyboardInterrupt:
-        pass
+        print
 
 
     # get the best solution

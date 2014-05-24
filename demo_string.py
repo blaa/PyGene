@@ -1,66 +1,50 @@
 #! /usr/bin/env python
 """
-demo that cracks a secret string
+demo that cracks a secret string.
 
 the feedback is how 'close' an organism's string
 is to the target string, based on the sum of the
 squares of the differences in the respective chars
-"""
 
-from pygene.gene import FloatGene, FloatGeneMax, rndPair
-from pygene.gamete import Gamete
-from pygene.organism import Organism, MendelOrganism
+Compare this demo to demo_case.py - similar demo where
+ordering/grouping of genes has a meaning.
+"""
+from pygene.gene import CharGeneExchange
+from pygene.organism import Organism
 from pygene.population import Population
 
 # this is the string that our organisms
 # are trying to evolve into
 teststr = "hackthis"
 
-# convert the string into a list of floats, where
-# each float is the ascii value of the corresponding
-# char
-
-teststrNums = [float(ord(c)) for c in teststr]
-
-# derive a gene which holds a character, and can
-# mutate into another character
-
-class HackerGene(FloatGeneMax):
-    
+class HackerGene(CharGeneExchange):
+    """
+    a gene which holds a character, and can mutate into another character
+    """
     mutProb = 0.1
-    mutAmt = 0.2
-    
-    randMin = 0x0
-    randMax = 0xff
+    mutAmt = (ord('z') - ord('a')) / 2
 
     def __repr__(self):
-
-        return str(chr(int(self.value)))
+        return self.value
 
 # generate a genome, one gene for each char in the string
+# { '0': Gene, '1': Gene2... }
 genome = {}
 for i in range(len(teststr)):
     genome[str(i)] = HackerGene
 
 # an organism that evolves towards the required string
 
-class StringHacker(MendelOrganism):
-    
+class StringHacker(Organism):
+
+    # set organism genome
     genome = genome
 
     def __repr__(self):
         """
         Return the gene values as a string
         """
-        chars = []
-        for i in xrange(self.numgenes):
-
-            #x = self[str(i)]
-            #print "x=%s" % repr(x)
-    
-            c = chr(int(self[str(i)]))
-            chars.append(c)
-
+        chars = [self[str(i)] for i in range(self.numgenes)]
         return str(''.join(chars))
 
     def fitness(self):
@@ -69,41 +53,49 @@ class StringHacker(MendelOrganism):
         of the distance of each char gene from the
         corresponding char of the target string
         """
-        diffs = 0
+        # Get our value as a string
         guess = str(self)
-        for i in xrange(self.numgenes):
-            x0 = teststrNums[i]
-            x1 = ord(guess[i])
-            diffs += (x1 - x0) ** 2
+
+        # Calculate difference
+        diffs = 0
+        for x0, x1 in zip(teststr, guess):
+            diffs += (ord(x1) - ord(x0)) ** 2
         return diffs
 
-class StringHackerPopulation(Population):
 
-    initPopulation = 10
+class StringHackerPopulation(Population):
+    # set population species
     species = StringHacker
-    
+
+    # Number of initial random organisms
+    initPopulation = 10
+
     # cull to this many children after each generation
     childCull = 10
-    
+
     # number of children to create after each generation
     childCount = 50
-    
+
     mutants = 0.25
 
-# start with a population of 10 random organisms
-ph = StringHackerPopulation()
 
-def main(nfittest=10, nkids=100):
+def main():
+    from time import time
+
+    # start with a population of random organisms
+    world = StringHackerPopulation()
+
     i = 0
+    started = time()
     while True:
-        b = ph.best()
-        print "generation %s: %s best=%s average=%s)" % (
-            i, repr(b), b.get_fitness(), ph.fitness())
+        b = world.best()
+        print "generation %02d: %s best=%s average=%s)" % (
+            i, repr(b), b.get_fitness(), world.fitness())
         if b.get_fitness() <= 0:
-            print "cracked!"
+            print "cracked in ", i, "generations and ", time() - started, "seconds"
             break
         i += 1
-        ph.gen()
+        world.gen()
 
 
 if __name__ == '__main__':

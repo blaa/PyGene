@@ -7,18 +7,18 @@ This one uses the discrete int gene
 
 from pygene.gene import FloatGene, IntGene, rndPair
 from pygene.gamete import Gamete
-from pygene.organism import Organism, MendelOrganism
+from pygene.organism import Organism 
 from pygene.population import Population
 
 # this is the string that our organisms
 # are trying to evolve into
 teststr = "hackthis"
 
-# convert the string into a list of floats, where
-# each float is the ascii value of the corresponding
+# convert the string into a list of ints, where
+# each int is the ascii value of the corresponding
 # char
 
-teststrNums = [float(ord(c)) for c in teststr]
+teststrNums = [ord(c) for c in teststr]
 
 # derive a gene which holds a character, and can
 # mutate into another character
@@ -26,10 +26,11 @@ teststrNums = [float(ord(c)) for c in teststr]
 class HackerGene(IntGene):
     
     mutProb = 0.1
-    mutAmt = 10.0
+    mutAmt = 10
     
-    randMin = 0x0
-    randMax = 0xff
+    randMin = 0
+    randMax = 255
+
 # generate a genome, one gene for each char in the string
 genome = {}
 for i in range(len(teststr)):
@@ -37,7 +38,7 @@ for i in range(len(teststr)):
 
 # an organism that evolves towards the required string
 
-class StringHacker(MendelOrganism):
+class StringHacker(Organism):
     
     genome = genome
 
@@ -62,7 +63,7 @@ class StringHacker(MendelOrganism):
         of the distance of each char gene from the
         corresponding char of the target string
         """
-        diffs = 0
+        diffs = 0.0
         guess = str(self)
         for i in xrange(self.numgenes):
             x0 = teststrNums[i]
@@ -82,24 +83,24 @@ class StringHackerPopulation(Population):
     childCull = 10
     
     # number of children to create after each generation
-    childCount = 40
+    childCount = 50
     
 
-def main(nfittest=10, nkids=100):
+def main():
     # Create initial population
-    ph = StringHackerPopulation()
+    world = StringHackerPopulation()
 
     # Iterate over generations
     i = 0
     while True:
-        b = ph.best()
+        b = world.best()
         print "generation %s: %s best=%s average=%s)" % (
-            i, repr(b), b.get_fitness(), ph.fitness())
+            i, repr(b), b.get_fitness(), world.fitness())
         if b.get_fitness() <= 0:
             print "cracked!"
             break
         i += 1
-        ph.gen()
+        world.gen()
 
 
 if __name__ == '__main__':

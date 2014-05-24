@@ -10,15 +10,17 @@ to the calculate_fitness() function, you'll notice the difference.
 
 """
 
-from pygene.gene import FloatGene, FloatGeneMax, rndPair
-from pygene.gamete import Gamete
-from pygene.organism import Organism, MendelOrganism
-from pygene.population import Population
 from multiprocessing import Pool
+
+from pygene.gene import FloatGene, FloatGeneMax
+from pygene.gamete import Gamete
+from pygene.organism import Organism
+from pygene.population import Population
+
 
 # Fitness function - global and unbound, for multiprocessing to be able to Pickle it
 def calculate_fitness(guess, numgenes):
-	diffs = 0
+	diffs = 0.0
 	for i in xrange(numgenes):
 		x0 = teststrNums[i]
 		x1 = ord(guess[i])
@@ -57,7 +59,7 @@ for i in range(len(teststr)):
 
 # an organism that evolves towards the required string
 
-class StringHacker(MendelOrganism):
+class StringHacker(Organism):
     
     genome = genome
 

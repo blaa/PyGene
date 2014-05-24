@@ -403,17 +403,17 @@ class CharGene(BaseGene):
     """
     # minimum possible value for gene
     # override in subclasses as needed
-    randMin = chr(0)
+    randMin = '\x00'
 
     # maximum possible value for gene
     # override in subclasses as needed
-    randMax = chr(255)
+    randMax = '\xff'
 
     def __repr__(self):
         """
         Returns safely printable value
         """
-        return str(self.value)
+        return self.value
 
     def mutate(self):
         """
@@ -421,14 +421,16 @@ class CharGene(BaseGene):
 
         perform mutation IN-PLACE, ie don't return mutated copy
         """
-        self.value = chr(ord(self.value) + randint(-self.mutAmt, self.mutAmt))
+        self.value = ord(self.value) + randint(-self.mutAmt, self.mutAmt)
 
         # if the gene has wandered outside the alphabet,
         # rein it back in
-        if self.value < self.randMin:
+        if self.value < ord(self.randMin):
             self.value = self.randMin
-        elif self.value > self.randMax:
+        elif self.value > ord(self.randMax):
             self.value = self.randMax
+        else:
+            self.value = chr(self.value)
 
     def randomValue(self):
         """
@@ -445,13 +447,26 @@ class CharGene(BaseGene):
         returns an int value, based on a formula of higher
         numbers dominating
         """
+        print "HERE", self.value, other.value
         return max(self.value, other.value)
+
+
+class CharGeneExchange(CharGene):
+    def __add__(self, other):
+        """
+        A variation of char gene where during the mixing a
+        average of two genes is selected.
+        """
+        print "HERE", self.value, other.value
+        return choice([self.value, other.value])
 
 
 class AsciiCharGene(CharGene):
     """
     Specialisation of CharGene that can only
     hold chars in the legal ASCII range
+
+    OBSOLETE/REMOVE: Exactly the same as chargene
     """
     # minimum possible value for gene
     # override in subclasses as needed

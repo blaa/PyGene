@@ -390,6 +390,62 @@ class Organism(BaseOrganism):
             gene.xmlDumpSelf(doc, pairtag)
 
 
+class GenomeSplitOrganism(Organism):
+    """
+    Don't exchange genes at random - like Organism does,
+    but split genome in random point and exchange halves.
+
+    This organism can work better in situation where `connected'
+    genes are located close to each other on the genome.
+    """
+
+    def mate(self, partner):
+        """
+        Mates this organism with another organism to
+        produce two entirely new organisms via random choice
+        of genome intersection and splitting halves.
+
+        Genes are sorted by keys, and the key name is what groups
+        genes in this process.
+        """
+        genotype1 = {}
+        genotype2 = {}
+
+        # 0 1 2 3 4 5
+        # G.G.G.G.G.G
+        # g.g.g.g.g.g
+        #  ^ - split on 0
+        # g.g.g.g.g.g
+        #           ^-  split in 5:
+        # G.G.G.G.G.G
+        intersection = randrange(0, len(self.genome))
+
+        # gene by gene, we assign our and partner's genes randomly
+        for i, name in enumerate(sorted(self.genome.keys())):
+            cls = self.genome[name]
+
+            ourGene = self.genes.get(name, None)
+            if not ourGene:
+                ourGene = cls()
+
+            partnerGene = partner.genes.get(name, None)
+            if not partnerGene:
+                partnerGene = cls()
+
+            # randomly assign genes to first or second child
+            if i < intersection:
+                genotype1[name] = ourGene
+                genotype2[name] = partnerGene
+            else:
+                genotype1[name] = partnerGene
+                genotype2[name] = ourGene
+
+        # got the genotypes, now create the child organisms
+        child1 = self.__class__(**genotype1)
+        child2 = self.__class__(**genotype2)
+
+        return (child1, child2)
+
 class MendelOrganism(BaseOrganism):
     """
     Classical Mendelian genetic organism
