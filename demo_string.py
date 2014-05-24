@@ -74,7 +74,7 @@ class StringHackerPopulation(Population):
     childCull = 10
 
     # number of children to create after each generation
-    childCount = 50
+    childCount = 100
 
     mutants = 0.25
 

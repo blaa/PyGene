@@ -279,6 +279,7 @@ class FloatGeneRandom(FloatGene):
         """
         self.value = self.randomValue()
 
+
 class FloatGeneRandRange(FloatGene):
     def __add__(self, other):
         """
@@ -365,6 +366,19 @@ class IntGene(BaseGene):
         numbers dominating
         """
         return max(self.value, other.value)
+
+
+class IntGeneRandom(IntGene):
+    """
+    Variant of IntGene where mutation always randomises the value
+    """
+    def mutate(self):
+        """
+        Randomise the gene
+
+        perform mutation IN-PLACE, ie don't return mutated copy
+        """
+        self.value = self.randomValue()
 
 
 class IntGeneExchange(IntGene):

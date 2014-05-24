@@ -231,7 +231,6 @@ class Population(PGXmlMixin):
 
             children.extend([child1, child2])
 
-
         # if incestuous, add in best adults
         if self.incest:
             children.extend(self[:self.incest])
@@ -269,9 +268,7 @@ class Population(PGXmlMixin):
             children.extend(mutants)
             children.sort()
         #print "added %s mutants" % numMutants
-
         # sort the children by fitness
-
         # take the best 'nfittest', make them the new population
         self.organisms[:] = children[:nfittest]
 

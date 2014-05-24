@@ -16,7 +16,7 @@ Refer to module pygene.prog for organism classes for genetic
 programming.
 """
 
-from random import random, randrange, choice
+from random import random, randrange, randint, choice
 
 from gene import BaseGene, rndPair
 from gamete import Gamete
@@ -418,8 +418,7 @@ class GenomeSplitOrganism(Organism):
         # g.g.g.g.g.g
         #           ^-  split in 5:
         # G.G.G.G.G.G
-        intersection = randrange(0, len(self.genome))
-
+        intersection = randint(0, len(self.genome))
         # gene by gene, we assign our and partner's genes randomly
         for i, name in enumerate(sorted(self.genome.keys())):
             cls = self.genome[name]
@@ -443,7 +442,6 @@ class GenomeSplitOrganism(Organism):
         # got the genotypes, now create the child organisms
         child1 = self.__class__(**genotype1)
         child2 = self.__class__(**genotype2)
-
         return (child1, child2)
 
 class MendelOrganism(BaseOrganism):
