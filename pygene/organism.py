@@ -398,7 +398,8 @@ class GenomeSplitOrganism(Organism):
     This organism can work better in situation where `connected'
     genes are located close to each other on the genome.
     """
-
+    chromosome_intersections = 2
+    
     def mate(self, partner):
         """
         Mates this organism with another organism to
@@ -418,30 +419,36 @@ class GenomeSplitOrganism(Organism):
         # g.g.g.g.g.g
         #           ^-  split in 5:
         # G.G.G.G.G.G
-        intersection = randint(0, len(self.genome))
-        # gene by gene, we assign our and partner's genes randomly
+
+        # Generate two random intersections
+        intersections = set(randrange(0, len(self.genome))
+                            for i in range(self.chromosome_intersections))
+
+        intersections = list(sorted(intersections))
+
+        source_a = self.genes
+        source_b = partner.genes
+        # gene by gene, we assign our and partner's genes
         for i, name in enumerate(sorted(self.genome.keys())):
-            cls = self.genome[name]
+            if i in intersections:
+                source_a, source_b = source_b, source_a
 
-            ourGene = self.genes.get(name, None)
-            if not ourGene:
-                ourGene = cls()
+            gene_a = source_a.get(name, None)
+            if not gene_a:
+                gene_a = self.genome[name]()
 
-            partnerGene = partner.genes.get(name, None)
-            if not partnerGene:
-                partnerGene = cls()
+            gene_b = source_b.get(name, None)
+            if not gene_b:
+                gene_b = self.genome[name]()
 
-            # randomly assign genes to first or second child
-            if i < intersection:
-                genotype1[name] = ourGene
-                genotype2[name] = partnerGene
-            else:
-                genotype1[name] = partnerGene
-                genotype2[name] = ourGene
+            # assign genes to first or second child
+            genotype1[name] = gene_a
+            genotype2[name] = gene_b
 
         # got the genotypes, now create the child organisms
         child1 = self.__class__(**genotype1)
         child2 = self.__class__(**genotype2)
+
         return (child1, child2)
 
 class MendelOrganism(BaseOrganism):

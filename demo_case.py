@@ -56,6 +56,7 @@ for l in range(locks):
 
 class CodeHacker(GenomeSplitOrganism):
 
+    chromosome_intersections = 2
     genome = genome
 
     def get_code(self, lock):
@@ -158,6 +159,7 @@ def main():
         sys.stdout.flush()
         i += 1
         ph.gen()
+
 
 if __name__ == '__main__':
     main()
