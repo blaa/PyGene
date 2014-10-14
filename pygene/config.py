@@ -61,7 +61,7 @@ class ConfigLoader(object):
         """
         Genome loader.
         Filename - path to configuration (alternatively you can pass the config
-          contents via the config_contents and pass None as the filename).
+        contents via the config_contents and pass None as the filename).
         If require_genes are passed after the loading we ensure that
         they exist.
         """

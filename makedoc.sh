@@ -1,4 +1,4 @@
 #!/bin/sh
 
-epydoc -n "pygene - Python genetic algorithms" -o doc pygene/
+epydoc -vn "pygene - Python genetic algorithms" -o doc pygene/
 
