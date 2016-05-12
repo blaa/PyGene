@@ -6,9 +6,9 @@ import random
 from random import randrange, choice
 from math import sqrt
 
-from organism import Organism, BaseOrganism
+from .organism import Organism, BaseOrganism
 
-from xmlio import PGXmlMixin
+from .xmlio import PGXmlMixin
 
 class Population(PGXmlMixin):
     """
@@ -94,18 +94,18 @@ class Population(PGXmlMixin):
         """
         self.organisms = []
 
-        if kw.has_key('species'):
+        if 'species' in kw:
             species = self.species = kw['species']
         else:
             species = self.species
 
-        if kw.has_key('init'):
+        if 'init' in kw:
             init = self.initPopulation = kw['init']
         else:
             init = self.initPopulation
 
         if not items:
-            for i in xrange(init):
+            for i in range(init):
                 self.add(species())
 
     def add(self, *args):
@@ -183,7 +183,7 @@ class Population(PGXmlMixin):
         # add in some new random organisms, if required
         if self.numNewOrganisms:
             #print "adding %d new organisms" % self.numNewOrganisms
-            for i in xrange(self.numNewOrganisms):
+            for i in range(self.numNewOrganisms):
                 self.add(self.species())
 
 
@@ -202,8 +202,8 @@ class Population(PGXmlMixin):
         #    stats[j] = 0
 
         # wild orgy, have lots of children
-        nchildren = 1 if nchildren == 1 else nchildren / 2
-        for i in xrange(nchildren):
+        nchildren = 1 if nchildren == 1 else nchildren // 2
+        for i in range(nchildren):
             # pick one parent randomly, favouring fittest
             idx1 = idx2 = int(sqrt(randrange(n2adults)))
             parent1 = self[-idx1]
@@ -251,7 +251,7 @@ class Population(PGXmlMixin):
             # children[0] - fittest
             # children[-1] - worse fitness
             if 0:
-                for i in xrange(numMutants):
+                for i in range(numMutants):
                     # pick one parent randomly, favouring fittest
                     idx = int(sqrt(randrange(n2children)))
 
@@ -260,7 +260,7 @@ class Population(PGXmlMixin):
                     mutant.prepare_fitness()
                     mutants.append(mutant)
             else:
-                for i in xrange(numMutants):
+                for i in range(numMutants):
                     mutant = children[i].mutate()
                     mutant.prepare_fitness()
                     mutants.append(mutant)
@@ -300,7 +300,7 @@ class Population(PGXmlMixin):
         """
         returns the average fitness value for the population
         """
-        fitnesses = map(lambda org: org.get_fitness(), self.organisms)
+        fitnesses = [org.get_fitness() for org in self.organisms]
 
         return sum(fitnesses)/len(fitnesses)
 

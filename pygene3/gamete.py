@@ -19,12 +19,12 @@ reproduction. Adding two gametes together produces
 a whole new Organism.
 """
 
-from xmlio import PGXmlMixin
+from .xmlio import PGXmlMixin
 
 class Gamete(PGXmlMixin):
     """
     Contains a set of genes.
-    
+
     Two gametes can be added together to form a
     new organism
     """
@@ -34,20 +34,20 @@ class Gamete(PGXmlMixin):
         """
         self.orgclass = orgclass
         self.genes = dict(genes)
-    
+
     def __getitem__(self, name):
         """
         Fetch a single gene by name
         """
         return self.genes[name]
-    
+
     def __add__(self, other):
         """
         Combines this gamete with another
         gamete to form an organism
         """
         return self.conceive(other)
-    
+
     def conceive(self, other):
         """
         Returns a whole new Organism class
@@ -55,8 +55,5 @@ class Gamete(PGXmlMixin):
         """
         if not isinstance(other, Gamete):
             raise Exception("Trying to mate a gamete with a non-gamete")
-    
+
         return self.orgclass(self, other)
-    
-
-

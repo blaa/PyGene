@@ -5,13 +5,13 @@ Implements genetic programming organisms.
 from random import random, randrange, choice
 from math import sqrt
 
-from organism import BaseOrganism
+from .organism import BaseOrganism
 
-from xmlio import PGXmlMixin
+from .xmlio import PGXmlMixin
 
 
 class TypeDoesNotExist(Exception):
-    u"""Parameters does not allow to construct a tree."""
+    """Parameters does not allow to construct a tree."""
     pass
 
 class BaseNode:
@@ -36,7 +36,7 @@ class FuncNode(BaseNode):
         self.org = org
 
         if org.type and type_:
-            options = filter(lambda x: x[-1][0] == type_, org.funcsList)
+            options = [x for x in org.funcsList if x[-1][0] == type_]
         else:
             options = org.funcsList
 
@@ -53,9 +53,9 @@ class FuncNode(BaseNode):
         # and fill in the args, from given, or randomly
         if not children:
             if typed:
-                children = [org.genNode(depth+1, typed[1+i]) for i in xrange(nargs)]
+                children = [org.genNode(depth+1, typed[1+i]) for i in range(nargs)]
             else:
-                children = [org.genNode(depth+1) for i in xrange(nargs)]
+                children = [org.genNode(depth+1) for i in range(nargs)]
 
         self.type = org.type and typed[0] or None
         self.argtype = org.type and typed[1:] or []
@@ -111,9 +111,9 @@ class FuncNode(BaseNode):
                         "  Expected %s found %s (%s) for function argument %d\n"
                         "  Tree:"
                     )
-                    print msg % (self.name, args, argtype, child.name, child.type, i + 1)
+                    print(msg % (self.name, args, argtype, child.name, child.type, i + 1))
                     self.org.tree.dump(1)
-                    print
+                    print()
                     raise TypeError
 
         t = self.func(*args)
@@ -125,9 +125,9 @@ class FuncNode(BaseNode):
                 "Genetical programming type error:\n"
                 "  Function '%s' returned %s (%r) instead of type %r\n"
             )
-            print msg % (self.name, t, type(t), self.type)
+            print(msg % (self.name, t, type(t), self.type))
             self.org.tree.dump(1)
-            print
+            print()
             raise TypeError
 
         return t
@@ -135,12 +135,12 @@ class FuncNode(BaseNode):
     def dump(self, level=0):
         indents = "  " * level
         #print indents + "func:" + self.name
-        print "%s%s" % (indents, self.name)
+        print("%s%s" % (indents, self.name))
         for child in self.children:
             child.dump(level+1)
 
     def check_types(self):
-        u"Check if types of this function match its arguments"
+        "Check if types of this function match its arguments"
         if not self.type:
             return
 
@@ -154,12 +154,12 @@ class FuncNode(BaseNode):
                     "  children: %r\n"
                     "  child types: %r\n"
                 )
-                print msg % (self.name,
+                print(msg % (self.name,
                              self.argtype,
                              self.children,
-                             [c.type for c in self.children])
+                             [c.type for c in self.children]))
                 self.org.tree.dump(1)
-                print
+                print()
                 raise TypeError
 
     def copy(self, doSplit=False):
@@ -213,7 +213,7 @@ class FuncNode(BaseNode):
         else:
             # delegate the split down to selected child
             clonedChildren = []
-            for i in xrange(self.nargs):
+            for i in range(self.nargs):
                 child = self.children[i]
                 if (i == childIdx):
                     # chosen child
@@ -263,7 +263,7 @@ class ConstNode(TerminalNode):
 
         if value == None:
             if type_:
-                options = filter(lambda x: type(x) == type_, org.consts)
+                options = [x for x in org.consts if type(x) == type_]
             else:
                 options = org.consts
             if options:
@@ -286,7 +286,7 @@ class ConstNode(TerminalNode):
     def dump(self, level=0):
         indents = "  " * level
         #print "%sconst: {%s}" % (indents, self.value)
-        print "%s{%s}" % (indents, self.value)
+        print("%s{%s}" % (indents, self.value))
 
     def copy(self):
         """
@@ -307,7 +307,7 @@ class VarNode(TerminalNode):
 
         if name == None:
             if org.type and type_:
-                options = filter(lambda x: org.funcsVars[x] == type_, org.vars)
+                options = [x for x in org.vars if org.funcsVars[x] == type_]
             else:
                 options = org.vars
 
@@ -335,7 +335,7 @@ class VarNode(TerminalNode):
 
         indents = "  " * level
         #print indents + "var {" + self.name + "}"
-        print "%s{%s}" % (indents, self.name)
+        print("%s{%s}" % (indents, self.name))
 
     def copy(self):
         """
@@ -354,7 +354,7 @@ class ProgOrganismMetaclass(type):
         Create the ProgOrganism class object
         """
         # parent constructor
-        object.__init__(cls, name, bases, data)
+        super(ProgOrganismMetaclass, cls).__init__(name, bases, data)
 
         # get the funcs, consts and vars class attribs
         funcs = data['funcs']
@@ -365,23 +365,23 @@ class ProgOrganismMetaclass(type):
         funcsList = []
         funcsDict = {}
         funcsVars = {}
-        for name, func in funcs.items():
+        for name, func in list(funcs.items()):
             try:
                 types = func._types
             except:
                 types = None
-            funcsList.append((name, func, func.func_code.co_argcount, types))
-            funcsDict[name] = (func, func.func_code.co_argcount, types)
+            funcsList.append((name, func, func.__code__.co_argcount, types))
+            funcsDict[name] = (func, func.__code__.co_argcount, types)
         if cls.type:
             funcsVars = dict(tuple(vars))
-            vars = map(lambda x: x[0], vars)
+            vars = [x[0] for x in vars]
 
         cls.vars = vars
         cls.funcsList = funcsList
         cls.funcsDict = funcsDict
         cls.funcsVars = funcsVars
 
-class ProgOrganism(BaseOrganism):
+class ProgOrganism(BaseOrganism, metaclass=ProgOrganismMetaclass):
     """
     Implements an organism for genetic programming
 
@@ -393,7 +393,6 @@ class ProgOrganism(BaseOrganism):
         - vars - a list of variable names
         - consts - a list of constant values
     """
-    __metaclass__ = ProgOrganismMetaclass
 
     funcs = {}
     vars = []
@@ -430,7 +429,7 @@ class ProgOrganism(BaseOrganism):
             tries += 1
 
             if tries > 20:
-                print "Warning: Failed to swap trees for", tries, "times. Continuing..."
+                print("Warning: Failed to swap trees for", tries, "times. Continuing...")
                 return self.copy(), mate.copy()
 
             # Get copied trees
@@ -483,9 +482,9 @@ class ProgOrganism(BaseOrganism):
         return (copy, subtree, lst, idx)
 
     def calc_nodes(self):
-        u"Calculate nodes in equation"
+        "Calculate nodes in equation"
         return self.tree.calc_nodes()
-    
+
     def copy(self):
         """
         returns a deep copy of this organism
@@ -493,7 +492,7 @@ class ProgOrganism(BaseOrganism):
         try:
             return self.__class__(self.tree.copy())
         except:
-            print "self.__class__ = %s" % self.__class__
+            print("self.__class__ = %s" % self.__class__)
             raise
 
     def dump(self, node=None, level=1):
@@ -525,8 +524,8 @@ class ProgOrganism(BaseOrganism):
                     return f
             except TypeDoesNotExist:
                 if cnt > 50:
-                    print "Warning, probably an infinite loop"
-                    print "  your options does not allow for tree construction"
+                    print("Warning, probably an infinite loop")
+                    print("  your options does not allow for tree construction")
                 continue
 
 

@@ -461,7 +461,6 @@ class CharGene(BaseGene):
         returns an int value, based on a formula of higher
         numbers dominating
         """
-        print "HERE", self.value, other.value
         return max(self.value, other.value)
 
 
@@ -471,7 +470,6 @@ class CharGeneExchange(CharGene):
         A variation of char gene where during the mixing a
         average of two genes is selected.
         """
-        print "HERE", self.value, other.value
         return choice([self.value, other.value])
 
 

@@ -18,10 +18,10 @@ programming.
 
 from random import random, randrange, randint, choice
 
-from gene import BaseGene, rndPair
-from gamete import Gamete
+from .gene import BaseGene, rndPair
+from .gamete import Gamete
 
-from xmlio import PGXmlMixin
+from .xmlio import PGXmlMixin
 
 class BaseOrganism(PGXmlMixin):
     """
@@ -100,16 +100,30 @@ class BaseOrganism(PGXmlMixin):
         a tie, or 1 if this organism wins
         """
         #print "BaseOrganism.duel: opponent=%s" % str(opponent)
+        a = self.get_fitness()
+        b = opponent.get_fitness()
+        if a > b:
+            return -1
+        elif b > a:
+            return 1
+        else:
+            return 0
 
-        return cmp(self.get_fitness(), opponent.get_fitness())
-
-    def __cmp__(self, other):
+    def __lt__(self, other):
         """
         Convenience method which invokes duel
 
         Allows lists of organisms to be sorted
         """
-        return self.duel(other)
+        return self.get_fitness() < other.get_fitness()
+
+    def __lte__(self, other):
+        """
+        Convenience method which invokes duel
+
+        Allows lists of organisms to be sorted
+        """
+        return self.get_fitness() <= other.get_fitness()
 
     def __repr__(self):
         """
@@ -226,7 +240,7 @@ class Organism(BaseOrganism):
         self.numgenes = len(self.genome)
 
         # we're being fed a set of zero or more genes
-        for name, cls in self.genome.items():
+        for name, cls in list(self.genome.items()):
 
             # set genepair from given arg, or default to a
             # new random instance of the gene
@@ -251,7 +265,7 @@ class Organism(BaseOrganism):
         returns a deep copy of this organism
         """
         genes = {}
-        for name, gene in self.genes.items():
+        for name, gene in list(self.genes.items()):
             genes[name] = gene.copy()
         return self.__class__(**genes)
 
@@ -265,7 +279,7 @@ class Organism(BaseOrganism):
         genotype2 = {}
 
         # gene by gene, we assign our and partner's genes randomly
-        for name, cls in self.genome.items():
+        for name, cls in list(self.genome.items()):
 
             ourGene = self.genes.get(name, None)
             if not ourGene:
@@ -310,9 +324,9 @@ class Organism(BaseOrganism):
         # phenotype dict
         if geneName == None:
             phenotype = {}
-            for name, cls in self.genome.items():
+            for name, cls in list(self.genome.items()):
                 val = self.phenotype(name)
-                if not phenotype.has_key(name):
+                if name not in phenotype:
                     phenotype[name] = []
                 phenotype[name].append(val)
 
@@ -335,12 +349,12 @@ class Organism(BaseOrganism):
 
         if self.mutateOneOnly:
             # unconditionally mutate just one gene
-            gene = choice(mutant.genes.values())
+            gene = choice(list(mutant.genes.values()))
             gene.mutate()
 
         else:
             # conditionally mutate all genes
-            for gene in mutant.genes.values():
+            for gene in list(mutant.genes.values()):
                 gene.maybeMutate()
 
         return mutant
@@ -350,11 +364,11 @@ class Organism(BaseOrganism):
         Produce a detailed human-readable report on
         this organism, its genotype and phenotype
         """
-        print "Organism %s:" % self.__class__.__name__
+        print("Organism %s:" % self.__class__.__name__)
 
-        print "  Fitness: %s" % self.get_fitness()
-        for k,v in self.genes.items():
-            print "  Gene: %s = %s" % (k, v)
+        print("  Fitness: %s" % self.get_fitness())
+        for k,v in list(self.genes.items()):
+            print("  Gene: %s = %s" % (k, v))
 
     def xmlDumpSelf(self, doc, parent):
         """
@@ -373,7 +387,7 @@ class Organism(BaseOrganism):
         self.xmlDumpAttribs(orgtag)
 
         # now dump out the constituent genes
-        for name, cls in self.genome.items():
+        for name, cls in list(self.genome.items()):
 
             # create a named genepair tag to contain genes
             pairtag = doc.createElement("genepair")
@@ -399,7 +413,7 @@ class GenomeSplitOrganism(Organism):
     genes are located close to each other on the genome.
     """
     chromosome_intersections = 2
-    
+
     def mate(self, partner):
         """
         Mates this organism with another organism to
@@ -518,7 +532,7 @@ class MendelOrganism(BaseOrganism):
 
         if gamete1 and gamete2:
             # create this organism from sexual reproduction
-            for name, cls in self.genome.items():
+            for name, cls in list(self.genome.items()):
                 self.genes[name] = (
                     gamete1[name].copy(),
                     gamete2[name].copy(),
@@ -531,7 +545,7 @@ class MendelOrganism(BaseOrganism):
             return
 
         # other case - we're being fed a set of zero or more genes
-        for name, cls in self.genome.items():
+        for name, cls in list(self.genome.items()):
 
             # set genepair from given arg, or default to a
             # new random instance of the gene
@@ -567,7 +581,7 @@ class MendelOrganism(BaseOrganism):
         returns a deep copy of this organism
         """
         genes = {}
-        for name, genepair in self.genes.items():
+        for name, genepair in list(self.genes.items()):
             genes[name] = (genepair[0].copy(), genepair[1].copy())
         return self.__class__(**genes)
 
@@ -579,7 +593,7 @@ class MendelOrganism(BaseOrganism):
         genes1 = {}
         genes2 = {}
 
-        for name, cls in self.genome.items():
+        for name, cls in list(self.genome.items()):
 
             # fetch the pair of genes of that name
             genepair = self.genes[name]
@@ -631,9 +645,9 @@ class MendelOrganism(BaseOrganism):
         # phenotype dict
         if geneName == None:
             phenotype = {}
-            for name, cls in self.genome.items():
+            for name, cls in list(self.genome.items()):
                 val = self.phenotype(name)
-                if not phenotype.has_key(name):
+                if name not in phenotype:
                     phenotype[name] = []
                 phenotype[name].append(val)
 
@@ -685,13 +699,13 @@ class MendelOrganism(BaseOrganism):
 
         if self.mutateOneOnly:
             # unconditionally mutate just one gene
-            genepair = choice(mutant.genes.values())
+            genepair = choice(list(mutant.genes.values()))
             genepair[0].mutate()
             genepair[1].mutate()
 
         else:
             # conditionally mutate all genes
-            for gene_a, gene_b in mutant.genes.values():
+            for gene_a, gene_b in list(mutant.genes.values()):
                 gene_a.maybeMutate()
                 gene_b.maybeMutate()
 
@@ -702,15 +716,15 @@ class MendelOrganism(BaseOrganism):
         Produce a detailed human-readable report on
         this organism, its genotype and phenotype
         """
-        print "Organism %s:" % self.__class__.__name__
+        print("Organism %s:" % self.__class__.__name__)
 
-        print "  Fitness: %s" % self.get_fitness()
-        for k,v in self.genes.items():
-            print "  Gene: %s" % k
-            print "    Phenotype: %s" % self[k]
-            print "    Genotype:"
-            print "      %s" % v[0]
-            print "      %s" % v[1]
+        print("  Fitness: %s" % self.get_fitness())
+        for k,v in list(self.genes.items()):
+            print("  Gene: %s" % k)
+            print("    Phenotype: %s" % self[k])
+            print("    Genotype:")
+            print("      %s" % v[0])
+            print("      %s" % v[1])
 
     def xmlDumpSelf(self, doc, parent):
         """
@@ -729,7 +743,7 @@ class MendelOrganism(BaseOrganism):
         self.xmlDumpAttribs(orgtag)
 
         # now dump out the constituent genes
-        for name, cls in self.genome.items():
+        for name, cls in list(self.genome.items()):
 
             # create a named genepair tag to contain genes
             pairtag = doc.createElement("genepair")
