@@ -2,14 +2,22 @@
 
 from distutils.core import setup
 
-import pygene
+import pygene3
 
-setup(name="pygene",
-      version=pygene.version,
+setup(name="pygene3",
+      version=pygene3.version,
       description="Simple Genetic Algorithms Library",
-      author="David McNab",
-      author_email="david@freenet.org.nz",
-      url="http://www.freenet.org.nz/python/pygene",
-      packages=['pygene'],
-     )
+      author="David McNab, Tomasz Fortuna",
+      author_email="bla@thera.be",
+      url="https://github.com/blaa/PyGene",
+      keywords="learning genetic classification",
+      license="GPLv2",
+      packages=['pygene3'],
+        classifiers=[
+        "Development Status :: 5 - Production/Stable",
+        "Topic :: Software Development :: Libraries",
+        "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
+    ],
+
+)
 
