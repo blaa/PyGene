@@ -5,7 +5,7 @@ It aims to be very simple to use, and suitable for people
 new to genetic algorithms.
 """
 
-version = "0.3.1"
+version = "0.3.2"
 
 __all__ = [
     'gene', 'gamete', 'organism', 'population', 'xmlio', 'prog',

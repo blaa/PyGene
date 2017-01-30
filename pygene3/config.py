@@ -93,7 +93,7 @@ class ConfigLoader(object):
 
         if filename is None and config_contents is not None:
             import io
-            self.config.readfp(io.BytesIO(config_contents))
+            self.config.readfp(io.StringIO(config_contents))
         else:
             self.config.read(filename)
 

@@ -59,6 +59,10 @@ def quad(x):
 
 loader = ConfigLoader(filename="quadratic.ini", require_genes=['x1', 'x2'])
 
+# Check also passing config as an argument
+config_contents = open('quadratic.ini', 'r', encoding='utf-8').read()
+test_loader = ConfigLoader(filename=None, config_contents=config_contents, require_genes=['x1', 'x2'])
+
 class QuadraticSolver(Organism):
     """
     Implements the organism which tries
